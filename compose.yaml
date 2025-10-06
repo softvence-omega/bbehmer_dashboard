@@ -1,0 +1,10 @@
+services:
+  frontend:
+    platform: linux/amd64
+    image: sajibsv/bbehmer-frontend:latest
+    container_name: bbehmer-frontend
+    environment:
+      - VITE_BASE_URL=https://app.sippd.coffee/bmr
+    ports:
+      - "4173:4173"
+    restart: always
