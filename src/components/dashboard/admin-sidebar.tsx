@@ -45,7 +45,6 @@ const AdminSidebar = () => {
       ]
     : [];
 
-  
   const menuItems = [
     {
       title: 'Announcement',
