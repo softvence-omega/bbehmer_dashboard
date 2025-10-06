@@ -58,6 +58,7 @@ import {
 } from 'lucide-react';
 import {
   useCreateAdminMutation,
+  useCreateSuperAdminMutation,
   useDeleteAdminMutation,
   useGetAdminManagementQuery,
   useUpdateAdminDetailsMutation,
@@ -69,6 +70,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { TRole } from '../../redux/features/auth/authSlice';
 
 // Admin type definition based on the provided API response
 type Admin = {
@@ -83,12 +85,10 @@ type Admin = {
   subscriptionPlan: string;
   planStartedAt: string;
   fcmToken: string | null;
-  isAdmin: boolean;
+  role: TRole;
   isLogIn: boolean;
   lastLoginAt: string;
   isSuspend: boolean;
-  stripeCustomerId: string | null;
-  stripeSubscriptionId: string | null;
 };
 
 // Form schema for creating/editing admins
@@ -120,7 +120,13 @@ const AdminManagement = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
   // UI state
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<{
+    open: boolean;
+    type: TRole;
+  }>({
+    open: false,
+    type: TRole.ADMIN,
+  });
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -131,6 +137,7 @@ const AdminManagement = () => {
     message: string;
   } | null>(null);
   const [createAdmin] = useCreateAdminMutation();
+  const [createSuperAdmin] = useCreateSuperAdminMutation();
   const [updateAdmin] = useUpdateAdminDetailsMutation();
   const [deleteAdmin] = useDeleteAdminMutation();
 
@@ -213,13 +220,14 @@ const AdminManagement = () => {
     setIsLoading(true);
     try {
       // Simulate API call
-      await createAdmin(data);
-
-      // In real implementation, you would call your create admin mutation here
-      // await createAdminMutation(data)
+      if (isCreateModalOpen.type === TRole.SUPERADMIN) {
+        await createSuperAdmin(data);
+      } else if (isCreateModalOpen.type === TRole.ADMIN) {
+        await createAdmin(data);
+      }
 
       showNotification('success', 'Admin created successfully');
-      setIsCreateModalOpen(false);
+      setIsCreateModalOpen({ open: false, type: TRole.ADMIN });
       createForm.reset();
       refetch(); // Refetch the admin list
     } catch (error) {
@@ -283,7 +291,7 @@ const AdminManagement = () => {
     editForm.reset({
       name: admin.name,
       email: admin.email,
-      password: '********', // Placeholder for password
+      password: '', // Placeholder for password
     });
     setIsEditModalOpen(true);
   };
@@ -308,6 +316,8 @@ const AdminManagement = () => {
 
   // Format date for display
   const formatDate = (dateString: string) => {
+    if (!dateString) return '';
+
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -324,10 +334,32 @@ const AdminManagement = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Admin Management</h1>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Admin
-        </Button>
+        <div className="flex gap-2">
+          {/* add super admin */}
+          <Button
+            onClick={() =>
+              setIsCreateModalOpen({
+                open: true,
+                type: TRole.SUPERADMIN,
+              })
+            }
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Super Admin
+          </Button>
+
+          <Button
+            onClick={() =>
+              setIsCreateModalOpen({
+                open: true,
+                type: TRole.ADMIN,
+              })
+            }
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Add Admin
+          </Button>
+        </div>
       </div>
 
       {/* Notification */}
@@ -408,7 +440,7 @@ const AdminManagement = () => {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Plan</TableHead>
+                  <TableHead>Role</TableHead>
                   <TableHead>Created</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -436,8 +468,9 @@ const AdminManagement = () => {
                               : 'bg-gray-500'
                           }
                         >
-                          {admin.subscriptionPlan.charAt(0).toUpperCase() +
-                            admin.subscriptionPlan.slice(1)}
+                          {admin.role === 'superadmin'
+                            ? 'Super Admin'
+                            : 'Admin'}
                         </Badge>
                       </TableCell>
                       <TableCell>{formatDate(admin.createdAt)}</TableCell>
@@ -560,11 +593,23 @@ const AdminManagement = () => {
       </Card>
 
       {/* Create Admin Modal */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+      <Dialog
+        open={isCreateModalOpen.open}
+        onOpenChange={() =>
+          setIsCreateModalOpen({
+            open: false,
+            type: TRole.USER,
+          })
+        }
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Create New Admin</DialogTitle>
-            <DialogDescription>Add a new admin to the system</DialogDescription>
+            <DialogTitle>
+              Create New {isCreateModalOpen.type.toUpperCase()}
+            </DialogTitle>
+            <DialogDescription>
+              Add a new {isCreateModalOpen.type.toUpperCase()} to the system
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={createForm.handleSubmit(handleCreateAdmin)}>
             <div className="space-y-4 py-4">
@@ -628,7 +673,7 @@ const AdminManagement = () => {
                 type="button"
                 variant="outline"
                 onClick={() => {
-                  setIsCreateModalOpen(false);
+                  setIsCreateModalOpen({ open: false, type: TRole.ADMIN });
                   createForm.reset();
                 }}
               >
@@ -641,7 +686,7 @@ const AdminManagement = () => {
                     Creating...
                   </>
                 ) : (
-                  'Create Admin'
+                  `Create ${isCreateModalOpen.type}`
                 )}
               </Button>
             </DialogFooter>
@@ -804,7 +849,9 @@ const AdminManagement = () => {
                       Admin Status
                     </Label>
                     <p className="font-medium">
-                      {selectedAdmin.isAdmin ? 'Admin' : 'Not Admin'}
+                      {selectedAdmin.role === 'superadmin'
+                        ? 'Super Admin'
+                        : 'Admin'}
                     </p>
                   </div>
                   <div>
@@ -855,22 +902,6 @@ const AdminManagement = () => {
                     </Label>
                     <p className="font-medium">
                       {formatDate(selectedAdmin.planStartedAt)}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-500">
-                      Stripe Customer ID
-                    </Label>
-                    <p className="font-medium">
-                      {selectedAdmin.stripeCustomerId || 'Not available'}
-                    </p>
-                  </div>
-                  <div>
-                    <Label className="text-sm text-gray-500">
-                      Stripe Subscription ID
-                    </Label>
-                    <p className="font-medium">
-                      {selectedAdmin.stripeSubscriptionId || 'Not available'}
                     </p>
                   </div>
                 </div>

@@ -98,6 +98,13 @@ const adminManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['admins'],
     }),
+    createSuperAdmin: builder.mutation({
+      query: (data) => ({
+        url: '/manage-admin/superadmin',
+        method: 'POST',
+        body: data,
+      }),
+    }),
     getAdminDetail: builder.query({
       query: ({ id }) => ({
         url: `/manage-admin/${id}`,
@@ -133,6 +140,7 @@ export const {
   useGetUserDetailsQuery,
   useGetAdminManagementQuery,
   useCreateAdminMutation,
+  useCreateSuperAdminMutation,
   useGetAdminDetailQuery,
   useUpdateAdminDetailsMutation,
   useDeleteAdminMutation,
