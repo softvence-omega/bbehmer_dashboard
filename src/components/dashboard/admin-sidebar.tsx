@@ -6,9 +6,7 @@ import {
   Megaphone,
   Bell,
   NotebookTabs,
-  CreditCard,
   ShoppingBasket,
-  UsersIcon,
   Ban,
   Logs,
   LucideMilestone,
@@ -64,12 +62,12 @@ const AdminSidebar = () => {
       view: 'coffee' as const,
       path: 'coffee-shop-management',
     },
-    {
-      title: 'Stripe Plan Management',
-      icon: CreditCard,
-      view: 'plan' as const,
-      path: 'plan',
-    },
+    // {
+    //   title: 'Stripe Plan Management',
+    //   icon: CreditCard,
+    //   view: 'plan' as const,
+    //   path: 'plan',
+    // },
     {
       title: 'Plan Limits',
       icon: LucideMilestone,
@@ -88,12 +86,12 @@ const AdminSidebar = () => {
       view: 'notes' as const,
       path: 'notes',
     },
-    {
-      title: 'Customers',
-      icon: UsersIcon,
-      view: 'customers' as const,
-      path: 'customer',
-    },
+    // {
+    //   title: 'Customers',
+    //   icon: UsersIcon,
+    //   view: 'customers' as const,
+    //   path: 'customer',
+    // },
     {
       title: 'Ban Ip',
       icon: Ban,

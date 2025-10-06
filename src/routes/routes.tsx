@@ -13,8 +13,6 @@ import AnnouncementPage from '../components/dashboard/announcement';
 import AnnouncementsList from '../components/dashboard/all-announcement';
 import NotificationsList from '../components/dashboard/admin-all-notification';
 import UserAdminNotesList from '../components/dashboard/admin-all-notes';
-import StripePlansList from '../components/dashboard/plan-management';
-import StripeProductsList from '../components/dashboard/admin-all-product';
 import StripeCustomersList from '../components/dashboard/admin-customer-list';
 import BanManagementList from '../components/dashboard/admin-ban-api-list';
 import AdminAuditLogsList from '../components/dashboard/admin-logs';
@@ -69,14 +67,14 @@ const router = createBrowserRouter([
         path: 'notes',
         element: <UserAdminNotesList />,
       },
-      {
-        path: 'plan',
-        element: <StripePlansList />,
-      },
-      {
-        path: 'products',
-        element: <StripeProductsList />,
-      },
+      // {
+      //   path: 'plan',
+      //   element: <StripePlansList />,
+      // },
+      // {
+      //   path: 'products',
+      //   element: <StripeProductsList />,
+      // },
       {
         path: 'customer',
         element: <StripeCustomersList />,

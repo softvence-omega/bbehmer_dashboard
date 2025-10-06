@@ -1,10 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
 
+export enum TRole {
+  USER = 'user',
+  ADMIN = 'admin',
+  SUPERADMIN = 'superadmin',
+}
+
 export type TUser = {
   email: string;
   name: string;
-  isAdmin: boolean;
+  role: TRole;
   isSuspend: boolean;
   iat: number;
   exp: number;

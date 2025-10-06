@@ -16,7 +16,10 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   }
 
   // validate is the user is admin
-  if (!user?.isAdmin) {
+  if (
+    user?.role === 'user' ||
+    (user?.role !== 'admin' && user?.role !== 'superadmin')
+  ) {
     return <Navigate to="/access-denied" replace={true} />;
   }
 
