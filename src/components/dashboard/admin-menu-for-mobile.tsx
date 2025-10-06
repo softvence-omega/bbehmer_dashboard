@@ -6,10 +6,8 @@ import {
   LayoutDashboard,
   Bell,
   Megaphone,
-  CreditCard,
   ShoppingBasket,
   NotebookTabs,
-  UsersIcon,
   Ban,
   Logs,
   Menu,
@@ -18,7 +16,6 @@ import {
   LucideMilestone,
   LogOut,
   Settings2,
-  LucideTowerControl,
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
@@ -37,18 +34,18 @@ const tabs = [
   { name: 'Notifications', icon: Bell, path: 'notifications' },
   { name: 'Announcement', icon: Megaphone, path: 'announcement' },
   { name: 'Paywall Control', icon: Shield, path: 'paywall-control' },
-  { name: 'Plan Management', icon: CreditCard, path: 'plan' },
+  // { name: 'Plan Management', icon: CreditCard, path: 'plan' },
   { name: 'Plan Limits', icon: LucideMilestone, path: 'plan-limits' },
   { name: 'Product Management', icon: ShoppingBasket, path: 'products' },
   { name: 'Notes', icon: NotebookTabs, path: 'notes' },
-  { name: 'Customers', icon: UsersIcon, path: 'customer' },
+  // { name: 'Customers', icon: UsersIcon, path: 'customer' },
   { name: 'Ban Ip', icon: Ban, path: 'ban-ip' },
   { name: 'Admin Logs', icon: Logs, path: 'admin-logs' },
-  {
-    name: 'Admin management',
-    icon: LucideTowerControl,
-    path: 'admin-management',
-  },
+  // {
+  //   name: 'Admin management',
+  //   icon: LucideTowerControl,
+  //   path: 'admin-management',
+  // },
   { name: 'Settings', icon: Settings2, path: 'settings' },
 ];
 

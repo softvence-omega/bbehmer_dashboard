@@ -6,7 +6,6 @@ import {
   Megaphone,
   Bell,
   NotebookTabs,
-  ShoppingBasket,
   Ban,
   Logs,
   LucideMilestone,
@@ -27,10 +26,26 @@ import {
   SidebarMenuItem,
 } from '../ui/sidebar';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../redux/hook';
-import { logOut } from '../../redux/features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { logOut, seletCurrentUser } from '../../redux/features/auth/authSlice';
 
 const AdminSidebar = () => {
+  const user = useAppSelector(seletCurrentUser);
+
+  const isSuperAdmin = user?.role === 'superadmin';
+
+  const adminManagementItem = isSuperAdmin
+    ? [
+        {
+          title: 'Admin management',
+          icon: LucideTowerControl,
+          view: 'adminManagement' as const,
+          path: 'admin-management',
+        },
+      ]
+    : [];
+
+  
   const menuItems = [
     {
       title: 'Announcement',
@@ -51,23 +66,11 @@ const AdminSidebar = () => {
       path: 'user-management',
     },
     {
-      title: 'Admin management',
-      icon: LucideTowerControl,
-      view: 'adminManagement' as const,
-      path: 'admin-management',
-    },
-    {
       title: 'Coffee Shop Management',
       icon: Store,
       view: 'coffee' as const,
       path: 'coffee-shop-management',
     },
-    // {
-    //   title: 'Stripe Plan Management',
-    //   icon: CreditCard,
-    //   view: 'plan' as const,
-    //   path: 'plan',
-    // },
     {
       title: 'Plan Limits',
       icon: LucideMilestone,
@@ -75,23 +78,11 @@ const AdminSidebar = () => {
       path: 'plan-limits',
     },
     {
-      title: 'Product Management',
-      icon: ShoppingBasket,
-      view: 'product',
-      path: 'products',
-    },
-    {
       title: 'Notes',
       icon: NotebookTabs,
       view: 'notes' as const,
       path: 'notes',
     },
-    // {
-    //   title: 'Customers',
-    //   icon: UsersIcon,
-    //   view: 'customers' as const,
-    //   path: 'customer',
-    // },
     {
       title: 'Ban Ip',
       icon: Ban,
@@ -124,6 +115,8 @@ const AdminSidebar = () => {
     },
   ];
 
+  const allMenuItems = [...menuItems, ...adminManagementItem];
+
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -148,7 +141,7 @@ const AdminSidebar = () => {
           <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {allMenuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <NavLink to={`/dashboard/admin/${item.path}`}>
                     <SidebarMenuButton
