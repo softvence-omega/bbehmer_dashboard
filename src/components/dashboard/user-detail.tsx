@@ -1,21 +1,31 @@
-import { ArrowLeft, Mail, Calendar, Activity, Star, FileText, Heart, Ban, RotateCcw, CreditCard, Bell } from "lucide-react"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Badge } from "../ui/badge"
-import { Separator } from "../ui/separator"
-import { useGetUserDetailsQuery } from "../../redux/features/admin/adminManagementApi"
+import {
+  ArrowLeft,
+  Mail,
+  Calendar,
+  Activity,
+  Star,
+  FileText,
+  Heart,
+  Ban,
+  RotateCcw,
+  CreditCard,
+  Bell,
+} from 'lucide-react';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Separator } from '../ui/separator';
+import { useGetUserDetailsQuery } from '../../redux/features/admin/adminManagementApi';
 interface UserDetailProps {
-  userId: string
-  onBack: () => void
-  setActionType:any
+  userId: string;
+  onBack: () => void;
+  setActionType: any;
 }
 
-const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
-    const {
-     data,
-   } = useGetUserDetailsQuery({id:userId});
+const UserDetail = ({ userId, onBack, setActionType }: UserDetailProps) => {
+  const { data } = useGetUserDetailsQuery({ id: userId });
 
-   const user = data?.data
+  const user = data?.data;
   // const user = {
   //   id: "1",
   //   name: "John Doe",
@@ -39,15 +49,21 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
   //   { action: "Updated profile", item: "Profile Settings", date: "2024-01-17" },
   // ]
 
-  const getStatusBadge = (status:boolean) => {
-  
-
-    return <Badge variant={status ? "default" : "secondary"}>{status ? "Suspended" : "Active"}</Badge>
-  }
+  const getStatusBadge = (status: boolean) => {
+    return (
+      <Badge variant={status ? 'default' : 'secondary'}>
+        {status ? 'Suspended' : 'Active'}
+      </Badge>
+    );
+  };
 
   const getSubscriptionBadge = (subscription: string) => {
-    return <Badge variant={subscription === "paid" ? "default" : "outline"}>{subscription}</Badge>
-  }
+    return (
+      <Badge variant={subscription === 'paid' ? 'default' : 'outline'}>
+        {subscription}
+      </Badge>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -64,16 +80,34 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
           <p className="text-muted-foreground">{user?.email}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {
-            user?.isSuspend ? <Button onClick={()=>{setActionType("Unsuspend")}} variant="outline" size="sm">
-            <Ban className="h-4 w-4 mr-2" />
-            UnSuspend User
-          </Button> : <Button onClick={()=>{setActionType("suspend")}} variant="outline" size="sm">
-            <Ban className="h-4 w-4 mr-2" />
-            Suspend User
-          </Button>
-          }
-          <Button onClick={() => setActionType("reset")} variant="outline" size="sm">
+          {user?.isSuspend ? (
+            <Button
+              onClick={() => {
+                setActionType('Unsuspend');
+              }}
+              variant="outline"
+              size="sm"
+            >
+              <Ban className="h-4 w-4 mr-2" />
+              UnSuspend User
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setActionType('suspend');
+              }}
+              variant="outline"
+              size="sm"
+            >
+              <Ban className="h-4 w-4 mr-2" />
+              Suspend User
+            </Button>
+          )}
+          <Button
+            onClick={() => setActionType('reset')}
+            variant="outline"
+            size="sm"
+          >
             <RotateCcw className="h-4 w-4 mr-2" />
             Reset Password
           </Button>
@@ -81,7 +115,13 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
             <CreditCard className="h-4 w-4 mr-2" />
             Manage Subscription
           </Button>
-          <Button onClick={()=>{setActionType("notification")}} variant="outline" size="sm">
+          <Button
+            onClick={() => {
+              setActionType('notification');
+            }}
+            variant="outline"
+            size="sm"
+          >
             <Bell className="h-4 w-4 mr-2" />
             Send Notification
           </Button>
@@ -155,7 +195,9 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">Joined {new Date(user?.createdAt).toDateString()}</span>
+              <span className="text-sm">
+                Joined {new Date(user?.createdAt).toDateString()}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Activity className="h-4 w-4 text-muted-foreground" />
@@ -175,7 +217,9 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Started</span>
-              <span className="text-sm">{new Date(user?.planStartedAt).toDateString()}</span>
+              <span className="text-sm">
+                {new Date(user?.planStartedAt).toDateString()}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Expires</span>
@@ -216,8 +260,7 @@ const UserDetail = ({userId, onBack, setActionType }: UserDetailProps) => {
         </CardContent>
       </Card> */}
     </div>
-  )
-}
-
+  );
+};
 
 export default UserDetail;

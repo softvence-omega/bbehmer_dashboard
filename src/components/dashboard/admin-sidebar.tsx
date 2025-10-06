@@ -1,6 +1,24 @@
-import { Users, Settings, Store, ChartNoAxesCombined, Megaphone, Bell, NotebookTabs, CreditCard, ShoppingBasket, UsersIcon, Ban, Logs, LucideMilestone, Shield, LogOut, Settings2, LucideTowerControl } from "lucide-react"
-import { 
-    Sidebar,
+import {
+  Users,
+  Settings,
+  Store,
+  ChartNoAxesCombined,
+  Megaphone,
+  Bell,
+  NotebookTabs,
+  CreditCard,
+  ShoppingBasket,
+  UsersIcon,
+  Ban,
+  Logs,
+  LucideMilestone,
+  Shield,
+  LogOut,
+  Settings2,
+  LucideTowerControl,
+} from 'lucide-react';
+import {
+  Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -8,104 +26,105 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem, } from "../ui/sidebar"
-import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import { useAppDispatch } from "../../redux/hook"
-import { logOut } from "../../redux/features/auth/authSlice"
+  SidebarMenuItem,
+} from '../ui/sidebar';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../redux/hook';
+import { logOut } from '../../redux/features/auth/authSlice';
 
-
-
-const AdminSidebar =() => {
+const AdminSidebar = () => {
   const menuItems = [
     {
-      title:"Announcement",
-      icon : Megaphone,
-      view: "coffee" as const,
-      path: "announcement"
+      title: 'Announcement',
+      icon: Megaphone,
+      view: 'coffee' as const,
+      path: 'announcement',
     },
     {
-      title:"Analytics & Usage Tracking",
+      title: 'Analytics & Usage Tracking',
       icon: ChartNoAxesCombined,
-      view: "analytics" as const,
-      path: "analytics-and-tracking"
+      view: 'analytics' as const,
+      path: 'analytics-and-tracking',
     },
     {
-      title: "User Management",
+      title: 'User Management',
       icon: Users,
-      view: "users" as const,
-      path: "user-management"
-    },
-    { title: "Admin management",
-      icon: LucideTowerControl, 
-      view: "adminManagement" as const,
-      path:"admin-management"},
-    {
-      title:"Coffee Shop Management",
-      icon : Store,
-      view: "coffee" as const,
-      path: "coffee-shop-management"
+      view: 'users' as const,
+      path: 'user-management',
     },
     {
-      title:"Stripe Plan Management",
+      title: 'Admin management',
+      icon: LucideTowerControl,
+      view: 'adminManagement' as const,
+      path: 'admin-management',
+    },
+    {
+      title: 'Coffee Shop Management',
+      icon: Store,
+      view: 'coffee' as const,
+      path: 'coffee-shop-management',
+    },
+    {
+      title: 'Stripe Plan Management',
       icon: CreditCard,
-      view: "plan" as const,
-      path: "plan"
+      view: 'plan' as const,
+      path: 'plan',
     },
     {
-      title:"Plan Limits",
+      title: 'Plan Limits',
       icon: LucideMilestone,
-      view: "plan-limits" as const,
-      path: "plan-limits"
+      view: 'plan-limits' as const,
+      path: 'plan-limits',
     },
     {
-      title:"Product Management",
+      title: 'Product Management',
       icon: ShoppingBasket,
-      view: "product",
-      path: "products"
+      view: 'product',
+      path: 'products',
     },
     {
-      title:"Notes",
+      title: 'Notes',
       icon: NotebookTabs,
-      view: "notes" as const,
-      path: "notes"
+      view: 'notes' as const,
+      path: 'notes',
     },
     {
-      title:"Customers",
+      title: 'Customers',
       icon: UsersIcon,
-      view: "customers" as const,
-      path: "customer"
+      view: 'customers' as const,
+      path: 'customer',
     },
     {
-      title:"Ban Ip",
+      title: 'Ban Ip',
       icon: Ban,
-      view:'ban ip' as const,
-      path:"ban-ip"
+      view: 'ban ip' as const,
+      path: 'ban-ip',
     },
     {
-      title:"Admin Logs",
-      icon:Logs,
-      view:'logs' as const,
-      path:'admin-logs'
+      title: 'Admin Logs',
+      icon: Logs,
+      view: 'logs' as const,
+      path: 'admin-logs',
     },
     {
-      title: "Paywall Control",
+      title: 'Paywall Control',
       icon: Shield,
-      view: "paywall" as const,
-      path: "paywall-control"
+      view: 'paywall' as const,
+      path: 'paywall-control',
     },
     {
-      title:"Notifications",
+      title: 'Notifications',
       icon: Bell,
-      view: "notifications" as const,
-      path: "notifications"
+      view: 'notifications' as const,
+      path: 'notifications',
     },
     {
-      title:"Settings",
+      title: 'Settings',
       icon: Settings2,
-      view: "settings" as const,
-      path: "settings"
+      view: 'settings' as const,
+      path: 'settings',
     },
-  ]
+  ];
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -114,7 +133,7 @@ const AdminSidebar =() => {
   const handleLogout = () => {
     // Clear auth tokens or user session data
     // Navigate to login
-    navigate("/");
+    navigate('/');
     dispatch(logOut());
   };
 
@@ -134,15 +153,19 @@ const AdminSidebar =() => {
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.path}>
                   <NavLink to={`/dashboard/admin/${item.path}`}>
-                  <SidebarMenuButton isActive={`/dashboard/admin/${item.path}` === location.pathname}>
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                    <SidebarMenuButton
+                      isActive={
+                        `/dashboard/admin/${item.path}` === location.pathname
+                      }
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
                   </NavLink>
                 </SidebarMenuItem>
               ))}
 
-               {/* Logout Item */}
+              {/* Logout Item */}
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={handleLogout}>
                   <LogOut className="h-4 w-4" />
@@ -154,7 +177,7 @@ const AdminSidebar =() => {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
-}
+  );
+};
 
 export default AdminSidebar;

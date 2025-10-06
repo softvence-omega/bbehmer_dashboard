@@ -1,6 +1,6 @@
-import type React from "react"
-import { useState } from "react"
-import { Button } from "../ui/button"
+import type React from 'react';
+import { useState } from 'react';
+import { Button } from '../ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,38 +9,38 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog"
-import { Label } from "../ui/label"
-import { Textarea } from "../ui/textarea"
-import { Plus } from "lucide-react"
+} from '../ui/dialog';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
+import { Plus } from 'lucide-react';
 
 interface AdminUser {
-  id: string
-  name: string
-  email: string
-  avatar?: string
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
 }
 
-const AddNoteDialog=()=> {
-  const [open, setOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null)
-  const [note, setNote] = useState("")
+const AddNoteDialog = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [note, setNote] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!selectedUser || !note.trim()) return
+    e.preventDefault();
+    if (!selectedUser || !note.trim()) return;
 
     // Here you would call your RTK Query mutation to add the note
-    console.log("Adding note:", {
+    console.log('Adding note:', {
       userId: selectedUser.id,
       note: note.trim(),
-    })
+    });
 
     // Reset form and close dialog
-    setSelectedUser(null)
-    setNote("")
-    setOpen(false)
-  }
+    setSelectedUser(null);
+    setNote('');
+    setOpen(false);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -54,7 +54,8 @@ const AddNoteDialog=()=> {
         <DialogHeader>
           <DialogTitle>Add Admin Note</DialogTitle>
           <DialogDescription>
-            Add an administrative note for a user. This will be visible to other administrators.
+            Add an administrative note for a user. This will be visible to other
+            administrators.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,7 +72,11 @@ const AddNoteDialog=()=> {
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={!selectedUser || !note.trim()}>
@@ -81,6 +86,6 @@ const AddNoteDialog=()=> {
         </form>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 export default AddNoteDialog;

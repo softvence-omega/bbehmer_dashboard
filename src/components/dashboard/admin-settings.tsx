@@ -1,39 +1,60 @@
-"use client"
+'use client';
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { Alert, AlertDescription } from "../ui/alert"
-import { Loader2, User, Mail, Lock, CheckCircle, Eye, EyeOff } from "lucide-react"
-import { useState, useEffect } from "react"
-import { useCreadintialsChangeMutation, useUserInformationQuery } from "../../redux/features/auth/authApi"
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Button } from '../ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Alert, AlertDescription } from '../ui/alert';
+import {
+  Loader2,
+  User,
+  Mail,
+  Lock,
+  CheckCircle,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
+import { useState, useEffect } from 'react';
+import {
+  useCreadintialsChangeMutation,
+  useUserInformationQuery,
+} from '../../redux/features/auth/authApi';
 
 // Validation schema
 const credentialsSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name must be less than 50 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  name: z
+    .string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be less than 50 characters'),
+  email: z.string().email('Please enter a valid email address'),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
+    .min(8, 'Password must be at least 8 characters')
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     ),
-})
+});
 
-type CredentialsFormData = z.infer<typeof credentialsSchema>
+type CredentialsFormData = z.infer<typeof credentialsSchema>;
 
 const AdminCreadintialsChange = () => {
-  const [submitSuccess, setSubmitSuccess] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-  const [showpass,setShowPass] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showpass, setShowPass] = useState(false);
 
-  const [creadintialsChange, { isLoading: isChangingPassword }] = useCreadintialsChangeMutation()
-  const { data, isLoading } = useUserInformationQuery(undefined)
+  const [creadintialsChange, { isLoading: isChangingPassword }] =
+    useCreadintialsChangeMutation();
+  const { data, isLoading } = useUserInformationQuery(undefined);
 
   // Always call useForm hook - never conditionally
   const {
@@ -44,46 +65,46 @@ const AdminCreadintialsChange = () => {
   } = useForm<CredentialsFormData>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      name: '',
+      email: '',
+      password: '',
     },
-    mode: "onChange",
-  })
+    mode: 'onChange',
+  });
 
   // Update form values when data is loaded
   useEffect(() => {
     if (data?.data?.user) {
-      const userInfo = data.data.user
+      const userInfo = data.data.user;
       reset({
-        name: userInfo.name || "",
-        email: userInfo.email || "",
-        password: "",
-      })
+        name: userInfo.name || '',
+        email: userInfo.email || '',
+        password: '',
+      });
     }
-  }, [data, reset])
+  }, [data, reset]);
 
   const onSubmit = async (formData: CredentialsFormData) => {
-    setSubmitError(null)
-    setSubmitSuccess(false)
+    setSubmitError(null);
+    setSubmitSuccess(false);
 
     try {
-      const res = await creadintialsChange(formData)
+      const res = await creadintialsChange(formData);
 
       // Check if the mutation was successful
       if (res.data) {
-        setSubmitSuccess(true)
+        setSubmitSuccess(true);
         // Reset form after successful submission
         setTimeout(() => {
-          setSubmitSuccess(false)
-        }, 3000)
+          setSubmitSuccess(false);
+        }, 3000);
       } else if (res.error) {
-        setSubmitError("Failed to update credentials. Please try again.")
+        setSubmitError('Failed to update credentials. Please try again.');
       }
     } catch (error) {
-      setSubmitError("Failed to update credentials. Please try again.")
+      setSubmitError('Failed to update credentials. Please try again.');
     }
-  }
+  };
 
   // Show loading spinner while fetching user data
   if (isLoading) {
@@ -96,15 +117,19 @@ const AdminCreadintialsChange = () => {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
     <div className="flex h-full items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Update Credentials</CardTitle>
-          <CardDescription className="text-center">Update your account information below</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center">
+            Update Credentials
+          </CardTitle>
+          <CardDescription className="text-center">
+            Update your account information below
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -119,11 +144,13 @@ const AdminCreadintialsChange = () => {
                   id="name"
                   type="text"
                   placeholder="Enter your full name"
-                  className={`pl-10 ${errors.name ? "border-red-500 focus:border-red-500" : ""}`}
-                  {...register("name")}
+                  className={`pl-10 ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
+                  {...register('name')}
                 />
               </div>
-              {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-sm text-red-600">{errors.name.message}</p>
+              )}
             </div>
 
             {/* Email Field */}
@@ -137,11 +164,13 @@ const AdminCreadintialsChange = () => {
                   id="email"
                   type="email"
                   placeholder="Enter your email"
-                  className={`pl-10 ${errors.email ? "border-red-500 focus:border-red-500" : ""}`}
-                  {...register("email")}
+                  className={`pl-10 ${errors.email ? 'border-red-500 focus:border-red-500' : ''}`}
+                  {...register('email')}
                 />
               </div>
-              {errors.email && <p className="text-sm text-red-600">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-600">{errors.email.message}</p>
+              )}
             </div>
 
             {/* Password Field */}
@@ -153,16 +182,31 @@ const AdminCreadintialsChange = () => {
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
                   id="password"
-                  type={showpass? "text" : "password"}
+                  type={showpass ? 'text' : 'password'}
                   placeholder="Enter new password"
-                  className={`pl-10 ${errors.password ? "border-red-500 focus:border-red-500" : ""}`}
-                  {...register("password")}
+                  className={`pl-10 ${errors.password ? 'border-red-500 focus:border-red-500' : ''}`}
+                  {...register('password')}
                 />
-                {showpass ? <Eye onClick={()=>setShowPass(false)} className="absolute right-3 top-3 h-4 w-4 text-gray-400"/> : <EyeOff onClick={()=>setShowPass(true)} className="absolute right-3 top-3 h-4 w-4 text-gray-400"/>}
+                {showpass ? (
+                  <Eye
+                    onClick={() => setShowPass(false)}
+                    className="absolute right-3 top-3 h-4 w-4 text-gray-400"
+                  />
+                ) : (
+                  <EyeOff
+                    onClick={() => setShowPass(true)}
+                    className="absolute right-3 top-3 h-4 w-4 text-gray-400"
+                  />
+                )}
               </div>
-              {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
               <p className="text-xs text-gray-500">
-                Password must contain at least 8 characters with uppercase, lowercase, and numbers
+                Password must contain at least 8 characters with uppercase,
+                lowercase, and numbers
               </p>
             </div>
 
@@ -170,26 +214,34 @@ const AdminCreadintialsChange = () => {
             {submitSuccess && (
               <Alert className="border-green-200 bg-green-50">
                 <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">Credentials updated successfully!</AlertDescription>
+                <AlertDescription className="text-green-800">
+                  Credentials updated successfully!
+                </AlertDescription>
               </Alert>
             )}
 
             {/* Error Message */}
             {submitError && (
               <Alert className="border-red-200 bg-red-50">
-                <AlertDescription className="text-red-800">{submitError}</AlertDescription>
+                <AlertDescription className="text-red-800">
+                  {submitError}
+                </AlertDescription>
               </Alert>
             )}
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full" disabled={!isValid || !isDirty || isChangingPassword}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!isValid || !isDirty || isChangingPassword}
+            >
               {isChangingPassword ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Updating...
                 </>
               ) : (
-                "Update Credentials"
+                'Update Credentials'
               )}
             </Button>
 
@@ -200,15 +252,15 @@ const AdminCreadintialsChange = () => {
               className="w-full bg-transparent"
               onClick={() => {
                 if (data?.data?.user) {
-                  const userInfo = data.data.user
+                  const userInfo = data.data.user;
                   reset({
-                    name: userInfo.name || "",
-                    email: userInfo.email || "",
-                    password: "",
-                  })
+                    name: userInfo.name || '',
+                    email: userInfo.email || '',
+                    password: '',
+                  });
                 }
-                setSubmitError(null)
-                setSubmitSuccess(false)
+                setSubmitError(null);
+                setSubmitSuccess(false);
               }}
               disabled={isChangingPassword}
             >
@@ -218,7 +270,7 @@ const AdminCreadintialsChange = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default AdminCreadintialsChange
+export default AdminCreadintialsChange;

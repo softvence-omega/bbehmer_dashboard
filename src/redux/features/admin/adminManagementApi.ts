@@ -1,9 +1,8 @@
-import { baseApi } from "../../api/baseApi";
+import { baseApi } from '../../api/baseApi';
 
 // Inject admin user management endpoints into the base API
 const adminManagementApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-
     // ✅ Query to fetch all users with optional filtering parameters
     getAllUser: builder.query({
       query: (args) => {
@@ -14,69 +13,69 @@ const adminManagementApi = baseApi.injectEndpoints({
           });
         }
         return {
-          url: "/admin/user/get-users",
-          method: "GET",
+          url: '/admin/user/get-users',
+          method: 'GET',
           params,
         };
       },
-      providesTags: ["users"], // Provides cache tag for invalidation
+      providesTags: ['users'], // Provides cache tag for invalidation
     }),
 
     // ✅ Query to fetch analytics about users (e.g., count, growth, etc.)
     getUsersAnalytics: builder.query({
       query: () => ({
-        url: "/admin/user/get-user-analytics",
-        method: "GET",
+        url: '/admin/user/get-user-analytics',
+        method: 'GET',
       }),
-      providesTags:["users"]
+      providesTags: ['users'],
     }),
 
     // ✅ Mutation to suspend a user by ID
     userSuspend: builder.mutation({
-      query: ({ id,reason }) => ({
+      query: ({ id, reason }) => ({
         url: `/user-suspend/suspend-a-user/${id}`,
-        method: "PATCH",
-        body:{reason}
+        method: 'PATCH',
+        body: { reason },
       }),
-      invalidatesTags: ["users"], // Invalidate users cache after suspension
+      invalidatesTags: ['users'], // Invalidate users cache after suspension
     }),
 
     // ✅ Mutation to un-suspend a user by ID
     userUnSuspend: builder.mutation({
       query: ({ id }) => ({
         url: `/user-suspend/unsuspend-a-user/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
-      invalidatesTags: ["users"], // Invalidate users cache after un-suspension
+      invalidatesTags: ['users'], // Invalidate users cache after un-suspension
     }),
 
     // ✅ Mutation to force logout a user by ID (usually for security or admin override)
     forceLogout: builder.mutation({
       query: ({ id }) => ({
         url: `/admin/user/force-logout/${id}`,
-        method: "GET", // Although GET is unusual for actions, used here as per backend
+        method: 'GET', // Although GET is unusual for actions, used here as per backend
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ['users'],
     }),
 
     // ✅ Mutation to reset a user’s password (admin-initiated)
     resetPassword: builder.mutation({
       query: ({ id }) => ({
         url: `/admin/user/reset-password/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
-      invalidatesTags: ["users"],
+      invalidatesTags: ['users'],
     }),
 
     // ✅ Query to get detailed information about a single user by ID
     getUserDetails: builder.query({
       query: ({ id }) => ({
         url: `/admin/user/get-user/${id}`,
-        method: "GET",
+        method: 'GET',
       }),
     }),
-    getAdminManagement:builder.query({
-      query:(args) => {
+    getAdminManagement: builder.query({
+      query: (args) => {
         const params = new URLSearchParams();
         if (args) {
           args.forEach((item: any) => {
@@ -84,42 +83,42 @@ const adminManagementApi = baseApi.injectEndpoints({
           });
         }
         return {
-        url:'/manage-admin',
-        method:"GET",
-        params:params
-      }
+          url: '/manage-admin',
+          method: 'GET',
+          params: params,
+        };
       },
-      providesTags:["admins"]
+      providesTags: ['admins'],
     }),
-    createAdmin :builder.mutation({
-      query:(data) => ({
-        url:"/manage-admin",
-        method:"POST",
-        body:data
+    createAdmin: builder.mutation({
+      query: (data) => ({
+        url: '/manage-admin',
+        method: 'POST',
+        body: data,
       }),
-      invalidatesTags:["admins"]
+      invalidatesTags: ['admins'],
     }),
-    getAdminDetail:builder.query({
-      query:({id})=>({
-          url:`/manage-admin/${id}`,
-          method:"GET",
-      })
-    }),
-    updateAdminDetails:builder.mutation({
-      query:({data,id})=>({
-        url:`/manage-admin/${id}`,
-        method:"PATCH",
-        body:data
+    getAdminDetail: builder.query({
+      query: ({ id }) => ({
+        url: `/manage-admin/${id}`,
+        method: 'GET',
       }),
-      invalidatesTags:["admins"]
     }),
-    deleteAdmin:builder.mutation({
-      query:({id})=>({
-        url:`/manage-admin/${id}`,
-        method:"DELETE"
+    updateAdminDetails: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `/manage-admin/${id}`,
+        method: 'PATCH',
+        body: data,
       }),
-      invalidatesTags:["admins"]
-    })
+      invalidatesTags: ['admins'],
+    }),
+    deleteAdmin: builder.mutation({
+      query: ({ id }) => ({
+        url: `/manage-admin/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['admins'],
+    }),
   }),
 });
 
@@ -136,5 +135,5 @@ export const {
   useCreateAdminMutation,
   useGetAdminDetailQuery,
   useUpdateAdminDetailsMutation,
-  useDeleteAdminMutation
+  useDeleteAdminMutation,
 } = adminManagementApi;

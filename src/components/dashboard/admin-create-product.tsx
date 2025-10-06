@@ -1,84 +1,120 @@
-"use client"
+'use client';
 
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
-import { Textarea } from "../ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { toast } from "sonner"
-import { DollarSign, Package } from "lucide-react"
-import { useCreatePlanMutation } from "../../redux/features/admin/adminNotification"
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '../ui/form';
+import { toast } from 'sonner';
+import { DollarSign, Package } from 'lucide-react';
+import { useCreatePlanMutation } from '../../redux/features/admin/adminNotification';
 
 const createProductSchema = z.object({
-  name: z.string().min(1, "Product name is required").max(100, "Name must be less than 100 characters"),
-  amount: z.number().min(1, "Amount must be greater than 0"),
-  interval: z.enum(["day", "week", "month", "year"], {
-    required_error: "Please select a billing interval",
+  name: z
+    .string()
+    .min(1, 'Product name is required')
+    .max(100, 'Name must be less than 100 characters'),
+  amount: z.number().min(1, 'Amount must be greater than 0'),
+  interval: z.enum(['day', 'week', 'month', 'year'], {
+    required_error: 'Please select a billing interval',
   }),
-  currency: z.string().min(3, "Currency code is required").max(3, "Currency must be 3 characters"),
+  currency: z
+    .string()
+    .min(3, 'Currency code is required')
+    .max(3, 'Currency must be 3 characters'),
   lookupKey: z
     .string()
-    .min(1, "Lookup key is required")
-    .max(50, "Lookup key must be less than 50 characters")
-    .regex(/^[a-zA-Z0-9_-]+$/, "Lookup key can only contain letters, numbers, hyphens, and underscores"),
-  description: z.string().min(1, "Description is required").max(500, "Description must be less than 500 characters"),
-  features: z.string().min(1, "At least one feature is required"),
-})
+    .min(1, 'Lookup key is required')
+    .max(50, 'Lookup key must be less than 50 characters')
+    .regex(
+      /^[a-zA-Z0-9_-]+$/,
+      'Lookup key can only contain letters, numbers, hyphens, and underscores',
+    ),
+  description: z
+    .string()
+    .min(1, 'Description is required')
+    .max(500, 'Description must be less than 500 characters'),
+  features: z.string().min(1, 'At least one feature is required'),
+});
 
-type CreateProductFormData = z.infer<typeof createProductSchema>
+type CreateProductFormData = z.infer<typeof createProductSchema>;
 
 interface CreateProductDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function CreateProductDialog({ open, onOpenChange }: CreateProductDialogProps) {
-  const [createProduct, { isLoading }] = useCreatePlanMutation()
+export default function CreateProductDialog({
+  open,
+  onOpenChange,
+}: CreateProductDialogProps) {
+  const [createProduct, { isLoading }] = useCreatePlanMutation();
 
   const form = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductSchema),
     defaultValues: {
-      name: "",
+      name: '',
       amount: 0,
-      interval: "month",
-      currency: "USD",
-      lookupKey: "",
-      description: "",
-      features: "",
+      interval: 'month',
+      currency: 'USD',
+      lookupKey: '',
+      description: '',
+      features: '',
     },
-  })
+  });
 
   const onSubmit = async (data: CreateProductFormData) => {
     try {
       await createProduct({
         ...data,
         amount: data.amount * 100, // Convert to cents
-      }).unwrap()
+      }).unwrap();
 
-      toast.success("Product created successfully!")
-      form.reset()
-      onOpenChange(false)
+      toast.success('Product created successfully!');
+      form.reset();
+      onOpenChange(false);
     } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to create product")
-      console.error("Create product error:", error)
+      toast.error(error?.data?.message || 'Failed to create product');
+      console.error('Create product error:', error);
     }
-  }
+  };
 
   const handleClose = () => {
-    form.reset()
-    onOpenChange(false)
-  }
+    form.reset();
+    onOpenChange(false);
+  };
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: form.watch("currency") || "USD",
-    }).format(value)
-  }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: form.watch('currency') || 'USD',
+    }).format(value);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -88,7 +124,9 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
             <Package className="h-5 w-5" />
             Create New Product
           </DialogTitle>
-          <DialogDescription>Create a new subscription product with pricing and features</DialogDescription>
+          <DialogDescription>
+            Create a new subscription product with pricing and features
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -103,7 +141,9 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                   <FormControl>
                     <Input placeholder="e.g., Pro Plan" {...field} />
                   </FormControl>
-                  <FormDescription>The name of your product as it will appear to customers</FormDescription>
+                  <FormDescription>
+                    The name of your product as it will appear to customers
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -117,9 +157,15 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe your product and what it includes..." rows={3} {...field} />
+                    <Textarea
+                      placeholder="Describe your product and what it includes..."
+                      rows={3}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>A detailed description of your product</FormDescription>
+                  <FormDescription>
+                    A detailed description of your product
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -143,12 +189,17 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                           min="0"
                           className="pl-10"
                           {...field}
-                          onChange={(e) => field.onChange(Number.parseFloat(e.target.value) || 0)}
+                          onChange={(e) =>
+                            field.onChange(
+                              Number.parseFloat(e.target.value) || 0,
+                            )
+                          }
                         />
                       </div>
                     </FormControl>
                     <FormDescription>
-                      {field.value > 0 && `${formatCurrency(field.value)} per ${form.watch("interval")}`}
+                      {field.value > 0 &&
+                        `${formatCurrency(field.value)} per ${form.watch('interval')}`}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -161,7 +212,10 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Currency</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select currency" />
@@ -171,8 +225,12 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                         <SelectItem value="USD">USD - US Dollar</SelectItem>
                         <SelectItem value="EUR">EUR - Euro</SelectItem>
                         <SelectItem value="GBP">GBP - British Pound</SelectItem>
-                        <SelectItem value="CAD">CAD - Canadian Dollar</SelectItem>
-                        <SelectItem value="AUD">AUD - Australian Dollar</SelectItem>
+                        <SelectItem value="CAD">
+                          CAD - Canadian Dollar
+                        </SelectItem>
+                        <SelectItem value="AUD">
+                          AUD - Australian Dollar
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -186,7 +244,10 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Billing Interval</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select interval" />
@@ -216,7 +277,8 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                     <Input placeholder="e.g., pro-plan" {...field} />
                   </FormControl>
                   <FormDescription>
-                    A unique identifier for this product. Use lowercase letters, numbers, hyphens, and underscores only.
+                    A unique identifier for this product. Use lowercase letters,
+                    numbers, hyphens, and underscores only.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -231,25 +293,37 @@ export default function CreateProductDialog({ open, onOpenChange }: CreateProduc
                 <FormItem>
                   <FormLabel>Features</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="e.g., feature1,feature2,feature3" rows={2} {...field} />
+                    <Textarea
+                      placeholder="e.g., feature1,feature2,feature3"
+                      rows={2}
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>List the features included in this product, separated by commas</FormDescription>
+                  <FormDescription>
+                    List the features included in this product, separated by
+                    commas
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={isLoading}
+              >
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Creating..." : "Create Product"}
+                {isLoading ? 'Creating...' : 'Create Product'}
               </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

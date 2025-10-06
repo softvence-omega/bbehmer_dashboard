@@ -1,71 +1,90 @@
-"use client"
+'use client';
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Badge } from "../ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Separator } from "../ui/separator"
-import { Skeleton } from "../ui/skeleton"
-import { Shield, Ban, Clock, AlertTriangle, XCircle, Calendar, Hash, FileText } from "lucide-react"
-import { useAdminGetBanIpDetailsQuery } from "../../redux/features/admin/adminNotification"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
+import { Skeleton } from '../ui/skeleton';
+import {
+  Shield,
+  Ban,
+  Clock,
+  AlertTriangle,
+  XCircle,
+  Calendar,
+  Hash,
+  FileText,
+} from 'lucide-react';
+import { useAdminGetBanIpDetailsQuery } from '../../redux/features/admin/adminNotification';
 
 interface BanDetailsDialogProps {
-  banId: string | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  banId: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetailsDialogProps) {
+export default function BanDetailsDialog({
+  banId,
+  open,
+  onOpenChange,
+}: BanDetailsDialogProps) {
   const {
     data: banDetails,
     isLoading,
     error,
   } = useAdminGetBanIpDetailsQuery(banId!, {
     skip: !banId || !open,
-  })
+  });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })
-  }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
   const isExpired = (expiresAt: string | null) => {
-    if (!expiresAt) return false
-    return new Date(expiresAt) < new Date()
-  }
+    if (!expiresAt) return false;
+    return new Date(expiresAt) < new Date();
+  };
 
   const getTimeRemaining = (expiresAt: string | null) => {
-    if (!expiresAt) return "Permanent ban"
+    if (!expiresAt) return 'Permanent ban';
 
-    const now = new Date()
-    const expiry = new Date(expiresAt)
-    const diff = expiry.getTime() - now.getTime()
+    const now = new Date();
+    const expiry = new Date(expiresAt);
+    const diff = expiry.getTime() - now.getTime();
 
-    if (diff <= 0) return "Expired"
+    if (diff <= 0) return 'Expired';
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    if (days > 0) return `${days} days, ${hours} hours remaining`
-    if (hours > 0) return `${hours} hours, ${minutes} minutes remaining`
-    if (minutes > 0) return `${minutes} minutes remaining`
-    return "Less than 1 minute remaining"
-  }
+    if (days > 0) return `${days} days, ${hours} hours remaining`;
+    if (hours > 0) return `${hours} hours, ${minutes} minutes remaining`;
+    if (minutes > 0) return `${minutes} minutes remaining`;
+    return 'Less than 1 minute remaining';
+  };
 
   const getBanStatus = (ban: any) => {
-    if (!ban?.expiresAt) return "permanent"
-    if (isExpired(ban.expiresAt)) return "expired"
-    return "active"
-  }
+    if (!ban?.expiresAt) return 'permanent';
+    if (isExpired(ban.expiresAt)) return 'expired';
+    return 'active';
+  };
 
-  if (!banId) return null
+  if (!banId) return null;
 
-  const ban = banDetails?.data?.[0]
+  const ban = banDetails?.data?.[0];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -73,9 +92,11 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Ban Details: {ban?.ip || "Loading..."}
+            Ban Details: {ban?.ip || 'Loading...'}
           </DialogTitle>
-          <DialogDescription>Complete information about this banned entity</DialogDescription>
+          <DialogDescription>
+            Complete information about this banned entity
+          </DialogDescription>
         </DialogHeader>
 
         {isLoading ? (
@@ -101,27 +122,35 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-xl font-mono">{ban.ip}</CardTitle>
+                    <CardTitle className="text-xl font-mono">
+                      {ban.ip}
+                    </CardTitle>
                     <p className="text-muted-foreground">Ban ID: {ban.id}</p>
                   </div>
                   <Badge
                     variant={
-                      getBanStatus(ban) === "active"
-                        ? "destructive"
-                        : getBanStatus(ban) === "permanent"
-                          ? "default"
-                          : "secondary"
+                      getBanStatus(ban) === 'active'
+                        ? 'destructive'
+                        : getBanStatus(ban) === 'permanent'
+                          ? 'default'
+                          : 'secondary'
                     }
                     className="text-sm"
                   >
-                    {getBanStatus(ban) === "active" && <Ban className="h-4 w-4 mr-1" />}
-                    {getBanStatus(ban) === "permanent" && <AlertTriangle className="h-4 w-4 mr-1" />}
-                    {getBanStatus(ban) === "expired" && <XCircle className="h-4 w-4 mr-1" />}
-                    {getBanStatus(ban) === "active"
-                      ? "Active Ban"
-                      : getBanStatus(ban) === "permanent"
-                        ? "Permanent Ban"
-                        : "Expired Ban"}
+                    {getBanStatus(ban) === 'active' && (
+                      <Ban className="h-4 w-4 mr-1" />
+                    )}
+                    {getBanStatus(ban) === 'permanent' && (
+                      <AlertTriangle className="h-4 w-4 mr-1" />
+                    )}
+                    {getBanStatus(ban) === 'expired' && (
+                      <XCircle className="h-4 w-4 mr-1" />
+                    )}
+                    {getBanStatus(ban) === 'active'
+                      ? 'Active Ban'
+                      : getBanStatus(ban) === 'permanent'
+                        ? 'Permanent Ban'
+                        : 'Expired Ban'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -150,7 +179,9 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm font-medium">{formatDate(ban.createdAt)}</p>
+                  <p className="text-sm font-medium">
+                    {formatDate(ban.createdAt)}
+                  </p>
                 </CardContent>
               </Card>
 
@@ -162,9 +193,13 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm font-medium">{getTimeRemaining(ban.expiresAt)}</p>
+                  <p className="text-sm font-medium">
+                    {getTimeRemaining(ban.expiresAt)}
+                  </p>
                   {ban.expiresAt && (
-                    <p className="text-xs text-muted-foreground mt-1">Expires: {formatDate(ban.expiresAt)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Expires: {formatDate(ban.expiresAt)}
+                    </p>
                   )}
                 </CardContent>
               </Card>
@@ -192,34 +227,42 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
                     <span className="text-muted-foreground">Status:</span>
                     <Badge
                       variant={
-                        getBanStatus(ban) === "active"
-                          ? "destructive"
-                          : getBanStatus(ban) === "permanent"
-                            ? "default"
-                            : "secondary"
+                        getBanStatus(ban) === 'active'
+                          ? 'destructive'
+                          : getBanStatus(ban) === 'permanent'
+                            ? 'default'
+                            : 'secondary'
                       }
                     >
-                      {getBanStatus(ban) === "active"
-                        ? "Active"
-                        : getBanStatus(ban) === "permanent"
-                          ? "Permanent"
-                          : "Expired"}
+                      {getBanStatus(ban) === 'active'
+                        ? 'Active'
+                        : getBanStatus(ban) === 'permanent'
+                          ? 'Permanent'
+                          : 'Expired'}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Type:</span>
-                    <span>{ban.expiresAt ? "Temporary" : "Permanent"}</span>
+                    <span>{ban.expiresAt ? 'Temporary' : 'Permanent'}</span>
                   </div>
                   {ban.expiresAt && (
                     <>
                       <Separator />
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Expires At:</span>
-                        <span className="font-medium">{formatDate(ban.expiresAt)}</span>
+                        <span className="text-muted-foreground">
+                          Expires At:
+                        </span>
+                        <span className="font-medium">
+                          {formatDate(ban.expiresAt)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Time Remaining:</span>
-                        <span className="font-medium">{getTimeRemaining(ban.expiresAt)}</span>
+                        <span className="text-muted-foreground">
+                          Time Remaining:
+                        </span>
+                        <span className="font-medium">
+                          {getTimeRemaining(ban.expiresAt)}
+                        </span>
                       </div>
                     </>
                   )}
@@ -230,5 +273,5 @@ export default function BanDetailsDialog({ banId, open, onOpenChange }: BanDetai
         ) : null}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

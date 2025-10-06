@@ -1,48 +1,58 @@
-"use client"
+'use client';
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Badge } from "../ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Skeleton } from "../ui/skeleton"
-import { ScrollText, Hash, Info } from "lucide-react"
-import { useAdminGetLogQuery } from "../../redux/features/admin/adminNotification"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Skeleton } from '../ui/skeleton';
+import { ScrollText, Hash, Info } from 'lucide-react';
+import { useAdminGetLogQuery } from '../../redux/features/admin/adminNotification';
 
 interface AdminLogDetailsDialogProps {
-  logId: string | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  logId: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: AdminLogDetailsDialogProps) {
+export default function AdminLogDetailsDialog({
+  logId,
+  open,
+  onOpenChange,
+}: AdminLogDetailsDialogProps) {
   const {
     data: logDetails,
     isLoading,
     error,
   } = useAdminGetLogQuery(logId!, {
     skip: !logId || !open,
-  })
+  });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })
-  }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
 
   const getActionBadgeVariant = (action: string) => {
-    if (action?.startsWith("CREATE")) return "default"
-    if (action?.startsWith("UPDATE")) return "secondary"
-    if (action?.startsWith("DELETE")) return "destructive"
-    return "outline"
-  }
+    if (action?.startsWith('CREATE')) return 'default';
+    if (action?.startsWith('UPDATE')) return 'secondary';
+    if (action?.startsWith('DELETE')) return 'destructive';
+    return 'outline';
+  };
 
-  if (!logId) return null
+  if (!logId) return null;
 
-  const log = logDetails?.data?.[0]
+  const log = logDetails?.data?.[0];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -52,7 +62,9 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
             <ScrollText className="h-5 w-5" />
             Audit Log Details
           </DialogTitle>
-          <DialogDescription>Detailed information about this administrative action</DialogDescription>
+          <DialogDescription>
+            Detailed information about this administrative action
+          </DialogDescription>
         </DialogHeader>
 
         {isLoading ? (
@@ -78,11 +90,18 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-xl">{log.action.replace(/_/g, " ")}</CardTitle>
-                    <p className="text-muted-foreground">Action performed by an administrator</p>
+                    <CardTitle className="text-xl">
+                      {log.action.replace(/_/g, ' ')}
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Action performed by an administrator
+                    </p>
                   </div>
-                  <Badge variant={getActionBadgeVariant(log.action)} className="text-sm">
-                    {log.action.split("_")[0]}
+                  <Badge
+                    variant={getActionBadgeVariant(log.action)}
+                    className="text-sm"
+                  >
+                    {log.action.split('_')[0]}
                   </Badge>
                 </div>
               </CardHeader>
@@ -91,7 +110,9 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
                   <div className="space-y-3">
                     <div>
                       <p className="text-muted-foreground">Admin ID</p>
-                      <p className="font-mono text-xs break-all">{log.adminId}</p>
+                      <p className="font-mono text-xs break-all">
+                        {log.adminId}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Timestamp</p>
@@ -105,7 +126,9 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
                     </div>
                     <div>
                       <p className="text-muted-foreground">Entity ID</p>
-                      <p className="font-mono text-xs break-all">{log.entityId}</p>
+                      <p className="font-mono text-xs break-all">
+                        {log.entityId}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -141,7 +164,9 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Log ID:</span>
-                    <span className="font-mono text-xs break-all">{log.id}</span>
+                    <span className="font-mono text-xs break-all">
+                      {log.id}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Action:</span>
@@ -153,11 +178,15 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Entity ID:</span>
-                    <span className="font-mono text-xs break-all">{log.entityId}</span>
+                    <span className="font-mono text-xs break-all">
+                      {log.entityId}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Created At:</span>
-                    <span className="font-medium">{formatDate(log.createdAt)}</span>
+                    <span className="font-medium">
+                      {formatDate(log.createdAt)}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -166,5 +195,5 @@ export default function AdminLogDetailsDialog({ logId, open, onOpenChange }: Adm
         ) : null}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,7 +1,5 @@
 const CommonLayout = () => {
-  return (
-    <div>CommonLayout</div>
-  )
-}
+  return <div>CommonLayout</div>;
+};
 
-export default CommonLayout
+export default CommonLayout;

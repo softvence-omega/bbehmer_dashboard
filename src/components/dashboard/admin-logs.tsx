@@ -1,86 +1,102 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Badge } from "../ui/badge"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import { Search, Eye, MoreVertical, ScrollText, RefreshCw, Trash2 } from "lucide-react"
-import { toast } from "sonner"
-import DeleteConfirmDialog from "./notes-delete"
-import AdminLogDetailsDialog from "./admin-log-details"
-import { useAdminLogDeleteMutation, useAdminLogsQuery } from "../../redux/features/admin/adminNotification"
+import { useState } from 'react';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
+import { Skeleton } from '../ui/skeleton';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import {
+  Search,
+  Eye,
+  MoreVertical,
+  ScrollText,
+  RefreshCw,
+  Trash2,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import DeleteConfirmDialog from './notes-delete';
+import AdminLogDetailsDialog from './admin-log-details';
+import {
+  useAdminLogDeleteMutation,
+  useAdminLogsQuery,
+} from '../../redux/features/admin/adminNotification';
 
 interface AdminLog {
-  id: string
-  adminId: string
-  action: string
-  entity: string
-  entityId: string
-  metadata: any | null
-  createdAt: string
+  id: string;
+  adminId: string;
+  action: string;
+  entity: string;
+  entityId: string;
+  metadata: any | null;
+  createdAt: string;
 }
 
 const AdminAuditLogsList = () => {
-  const [currentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedLogId, setSelectedLogId] = useState<string | null>(null)
-  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("all")
-  const [pageSize] = useState(12)
+  const [currentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  const [pageSize] = useState(12);
 
-  const skip = (currentPage - 1) * pageSize
+  const skip = (currentPage - 1) * pageSize;
   const { data, isLoading, error, refetch } = useAdminLogsQuery({
     skip,
     take: pageSize,
-  })
+  });
 
-  const [deleteAdminLog, { isLoading: isDeleting }] = useAdminLogDeleteMutation()
+  const [deleteAdminLog, { isLoading: isDeleting }] =
+    useAdminLogDeleteMutation();
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const getActionBadgeVariant = (action: string) => {
-    if (action.startsWith("CREATE")) return "default"
-    if (action.startsWith("UPDATE")) return "secondary"
-    if (action.startsWith("DELETE")) return "destructive"
-    return "outline"
-  }
+    if (action.startsWith('CREATE')) return 'default';
+    if (action.startsWith('UPDATE')) return 'secondary';
+    if (action.startsWith('DELETE')) return 'destructive';
+    return 'outline';
+  };
 
   const handleViewDetails = (logId: string) => {
-    setSelectedLogId(logId)
-    setDetailsDialogOpen(true)
-  }
+    setSelectedLogId(logId);
+    setDetailsDialogOpen(true);
+  };
 
   const handleDeleteLog = (logId: string) => {
-    setSelectedLogId(logId)
-    setDeleteDialogOpen(true)
-  }
+    setSelectedLogId(logId);
+    setDeleteDialogOpen(true);
+  };
 
   const confirmDelete = async () => {
-    if (!selectedLogId) return
+    if (!selectedLogId) return;
 
     try {
-      await deleteAdminLog(selectedLogId).unwrap()
-      toast.success("Log deleted successfully")
-      setDeleteDialogOpen(false)
-      setSelectedLogId(null)
+      await deleteAdminLog(selectedLogId).unwrap();
+      toast.success('Log deleted successfully');
+      setDeleteDialogOpen(false);
+      setSelectedLogId(null);
     } catch (error) {
-      toast.error("Failed to delete log")
-      console.error("Delete log error:", error)
+      toast.error('Failed to delete log');
+      console.error('Delete log error:', error);
     }
-  }
+  };
 
   const filterLogs = (logs: AdminLog[]) => {
     return logs.filter((log) => {
@@ -88,20 +104,20 @@ const AdminAuditLogsList = () => {
         log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.entity.toLowerCase().includes(searchTerm.toLowerCase()) ||
         log.entityId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.adminId.toLowerCase().includes(searchTerm.toLowerCase())
+        log.adminId.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesTab =
-        activeTab === "all" ||
-        (activeTab === "create" && log.action.startsWith("CREATE")) ||
-        (activeTab === "update" && log.action.startsWith("UPDATE")) ||
-        (activeTab === "delete" && log.action.startsWith("DELETE"))
+        activeTab === 'all' ||
+        (activeTab === 'create' && log.action.startsWith('CREATE')) ||
+        (activeTab === 'update' && log.action.startsWith('UPDATE')) ||
+        (activeTab === 'delete' && log.action.startsWith('DELETE'));
 
-      return matchesSearch && matchesTab
-    })
-  }
+      return matchesSearch && matchesTab;
+    });
+  };
 
-  const logs = data?.data || []
-  const filteredLogs = filterLogs(logs)
+  const logs = data?.data || [];
+  const filteredLogs = filterLogs(logs);
 
   if (error) {
     return (
@@ -116,7 +132,7 @@ const AdminAuditLogsList = () => {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -125,7 +141,9 @@ const AdminAuditLogsList = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold">Admin Audit Logs</h1>
-          <p className="text-muted-foreground">Track administrative actions and system changes</p>
+          <p className="text-muted-foreground">
+            Track administrative actions and system changes
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="flex items-center gap-1">
@@ -152,7 +170,11 @@ const AdminAuditLogsList = () => {
                 className="pl-10"
               />
             </div>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-auto"
+            >
               <TabsList>
                 <TabsTrigger value="all">All Actions</TabsTrigger>
                 <TabsTrigger value="create">Create</TabsTrigger>
@@ -196,7 +218,9 @@ const AdminAuditLogsList = () => {
                   <ScrollText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-lg font-medium">No audit logs found</p>
                   <p className="text-muted-foreground">
-                    {searchTerm ? "Try adjusting your search terms" : "No administrative actions have been logged yet"}
+                    {searchTerm
+                      ? 'Try adjusting your search terms'
+                      : 'No administrative actions have been logged yet'}
                   </p>
                 </div>
               </CardContent>
@@ -208,21 +232,34 @@ const AdminAuditLogsList = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-lg">{log.action.replace(/_/g, " ")}</CardTitle>
-                    <p className="text-sm text-muted-foreground">Entity: {log.entity}</p>
+                    <CardTitle className="text-lg">
+                      {log.action.replace(/_/g, ' ')}
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Entity: {log.entity}
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={getActionBadgeVariant(log.action)} className="text-xs">
-                      {log.action.split("_")[0]}
+                    <Badge
+                      variant={getActionBadgeVariant(log.action)}
+                      className="text-xs"
+                    >
+                      {log.action.split('_')[0]}
                     </Badge>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                        >
                           <MoreVertical className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => handleViewDetails(log.id)}>
+                        <DropdownMenuItem
+                          onClick={() => handleViewDetails(log.id)}
+                        >
                           <Eye className="h-4 w-4 mr-2" />
                           View Details
                         </DropdownMenuItem>
@@ -244,15 +281,21 @@ const AdminAuditLogsList = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Admin ID:</span>
-                      <span className="font-mono text-xs">{log.adminId.slice(0, 8)}...</span>
+                      <span className="font-mono text-xs">
+                        {log.adminId.slice(0, 8)}...
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Entity ID:</span>
-                      <span className="font-mono text-xs">{log.entityId.slice(0, 8)}...</span>
+                      <span className="font-mono text-xs">
+                        {log.entityId.slice(0, 8)}...
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Timestamp:</span>
-                      <span className="font-medium">{formatDate(log.createdAt)}</span>
+                      <span className="font-medium">
+                        {formatDate(log.createdAt)}
+                      </span>
                     </div>
                   </div>
 
@@ -274,7 +317,13 @@ const AdminAuditLogsList = () => {
       </div>
 
       {/* Dialogs */}
-     {selectedLogId &&  <AdminLogDetailsDialog logId={selectedLogId} open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen} />}
+      {selectedLogId && (
+        <AdminLogDetailsDialog
+          logId={selectedLogId}
+          open={detailsDialogOpen}
+          onOpenChange={setDetailsDialogOpen}
+        />
+      )}
 
       <DeleteConfirmDialog
         open={deleteDialogOpen}
@@ -285,7 +334,7 @@ const AdminAuditLogsList = () => {
         description="Are you sure you want to delete this audit log entry? This action cannot be undone."
       />
     </div>
-  )
-}
+  );
+};
 
-export default AdminAuditLogsList
+export default AdminAuditLogsList;

@@ -1,14 +1,24 @@
-
-import { useState } from "react"
-import { Badge } from "../ui/badge"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Input } from "../ui/input"
-import { Skeleton } from "../ui/skeleton"
-import { Tabs, TabsList, TabsTrigger } from "../ui/tabs"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Label } from "../ui/label"
+import { useState } from 'react';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
+import { Skeleton } from '../ui/skeleton';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Label } from '../ui/label';
 import {
   Search,
   Eye,
@@ -21,8 +31,8 @@ import {
   Calendar,
   Hash,
   Tag,
-} from "lucide-react"
-import { useAllPlanQuery } from "../../redux/features/admin/adminNotification"
+} from 'lucide-react';
+import { useAllPlanQuery } from '../../redux/features/admin/adminNotification';
 
 // Mock hook - replace with your actual RTK Query hook
 // const useAllPlanQuery = (params: any) => {
@@ -188,85 +198,85 @@ import { useAllPlanQuery } from "../../redux/features/admin/adminNotification"
 // }
 
 interface StripePlan {
-  id: string
-  object: string
-  active: boolean
-  billing_scheme: string
-  created: number
-  currency: string
-  custom_unit_amount: null
-  livemode: boolean
-  lookup_key: string | null
+  id: string;
+  object: string;
+  active: boolean;
+  billing_scheme: string;
+  created: number;
+  currency: string;
+  custom_unit_amount: null;
+  livemode: boolean;
+  lookup_key: string | null;
   metadata: {
-    features?: string
-    [key: string]: any
-  }
-  nickname: string | null
-  product: string
+    features?: string;
+    [key: string]: any;
+  };
+  nickname: string | null;
+  product: string;
   recurring: {
-    interval: string
-    interval_count: number
-    meter: null
-    trial_period_days: null
-    usage_type: string
-  }
-  tax_behavior: string
-  tiers_mode: null
-  transform_quantity: null
-  type: string
-  unit_amount: number
-  unit_amount_decimal: string
+    interval: string;
+    interval_count: number;
+    meter: null;
+    trial_period_days: null;
+    usage_type: string;
+  };
+  tax_behavior: string;
+  tiers_mode: null;
+  transform_quantity: null;
+  type: string;
+  unit_amount: number;
+  unit_amount_decimal: string;
 }
 
 const StripePlansList = () => {
-  const [currentPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedPlan, setSelectedPlan] = useState<StripePlan | null>(null)
-  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState("all")
-  const [pageSize] = useState(10)
+  const [currentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState<StripePlan | null>(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('all');
+  const [pageSize] = useState(10);
 
-  const skip = (currentPage - 1) * pageSize
+  const skip = (currentPage - 1) * pageSize;
 
   const { data, isLoading, error, refetch } = useAllPlanQuery({
     skip,
     take: pageSize,
-  })
+  });
 
   const formatCurrency = (amount: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
       currency: currency.toUpperCase(),
-    }).format(amount / 100)
-  }
+    }).format(amount / 100);
+  };
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const parseFeatures = (metadata: any) => {
     try {
       if (metadata?.features) {
         // Remove extra quotes and parse
-        const features = metadata.features.replace(/"/g, "")
-        return features.split(",").filter(Boolean)
+        const features = metadata.features.replace(/"/g, '');
+        return features.split(',').filter(Boolean);
       }
-      return []
+      return [];
     } catch {
-      return []
+      return [];
     }
-  }
+  };
 
   const handleViewDetails = (plan: StripePlan) => {
-    setSelectedPlan(plan)
-    setDetailsDialogOpen(true)
-  }
+    setSelectedPlan(plan);
+    setDetailsDialogOpen(true);
+  };
 
   const filterPlans = (plans: StripePlan[]) => {
     return plans?.filter((plan) => {
@@ -275,17 +285,19 @@ const StripePlansList = () => {
         plan?.nickname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plan?.lookup_key?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plan?.currency?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        plan?.product?.toLowerCase().includes(searchTerm.toLowerCase())
+        plan?.product?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesTab =
-        activeTab === "all" || (activeTab === "active" && plan.active) || (activeTab === "inactive" && !plan.active)
+        activeTab === 'all' ||
+        (activeTab === 'active' && plan.active) ||
+        (activeTab === 'inactive' && !plan.active);
 
-      return matchesSearch && matchesTab
-    })
-  }
+      return matchesSearch && matchesTab;
+    });
+  };
 
-  const stripePlans = data?.data || []
-  const filteredPlans = filterPlans(stripePlans)
+  const stripePlans = data?.data || [];
+  const filteredPlans = filterPlans(stripePlans);
 
   if (error) {
     return (
@@ -300,7 +312,7 @@ const StripePlansList = () => {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -309,7 +321,9 @@ const StripePlansList = () => {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold">Stripe Plans Management</h1>
-          <p className="text-muted-foreground">Manage your subscription plans and pricing</p>
+          <p className="text-muted-foreground">
+            Manage your subscription plans and pricing
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className="flex items-center gap-1">
@@ -336,7 +350,11 @@ const StripePlansList = () => {
                 className="pl-10"
               />
             </div>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-auto"
+            >
               <TabsList>
                 <TabsTrigger value="all">All Plans</TabsTrigger>
                 <TabsTrigger value="active">Active</TabsTrigger>
@@ -382,7 +400,9 @@ const StripePlansList = () => {
                   <CreditCard className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <p className="text-lg font-medium">No plans found</p>
                   <p className="text-muted-foreground">
-                    {searchTerm ? "Try adjusting your search terms" : "No plans have been created yet"}
+                    {searchTerm
+                      ? 'Try adjusting your search terms'
+                      : 'No plans have been created yet'}
                   </p>
                 </div>
               </CardContent>
@@ -390,32 +410,43 @@ const StripePlansList = () => {
           </div>
         ) : (
           filteredPlans.map((plan) => {
-            const features = parseFeatures(plan.metadata)
+            const features = parseFeatures(plan.metadata);
             return (
               <Card key={plan.id} className="hover:shadow-md transition-shadow">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1 min-w-0">
                       <CardTitle className="text-lg truncate">
-                        {plan.nickname || plan.lookup_key || "Unnamed Plan"}
+                        {plan.nickname || plan.lookup_key || 'Unnamed Plan'}
                       </CardTitle>
                       <p className="text-sm text-muted-foreground truncate">
-                        ID: {plan.id.substring(0, 10)}...{plan.id.substring(plan.id.length - 6)}
+                        ID: {plan.id.substring(0, 10)}...
+                        {plan.id.substring(plan.id.length - 6)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-2">
-                      <Badge variant={plan.active ? "default" : "secondary"}>
-                        {plan.active ? <CheckCircle className="h-3 w-3 mr-1" /> : <XCircle className="h-3 w-3 mr-1" />}
-                        {plan.active ? "Active" : "Inactive"}
+                      <Badge variant={plan.active ? 'default' : 'secondary'}>
+                        {plan.active ? (
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                        ) : (
+                          <XCircle className="h-3 w-3 mr-1" />
+                        )}
+                        {plan.active ? 'Active' : 'Inactive'}
                       </Badge>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                          >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleViewDetails(plan)}>
+                          <DropdownMenuItem
+                            onClick={() => handleViewDetails(plan)}
+                          >
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </DropdownMenuItem>
@@ -425,7 +456,7 @@ const StripePlansList = () => {
                             ) : (
                               <CheckCircle className="h-4 w-4 mr-2" />
                             )}
-                            {plan.active ? "Deactivate" : "Activate"}
+                            {plan.active ? 'Deactivate' : 'Activate'}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -437,15 +468,21 @@ const StripePlansList = () => {
                     {/* Price */}
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-5 w-5 text-green-600" />
-                      <span className="text-2xl font-bold">{formatCurrency(plan.unit_amount, plan.currency)}</span>
-                      <span className="text-muted-foreground">/{plan.recurring.interval}</span>
+                      <span className="text-2xl font-bold">
+                        {formatCurrency(plan.unit_amount, plan.currency)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        /{plan.recurring.interval}
+                      </span>
                     </div>
 
                     {/* Details */}
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Currency:</span>
-                        <span className="font-medium">{plan.currency.toUpperCase()}</span>
+                        <span className="font-medium">
+                          {plan.currency.toUpperCase()}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Interval:</span>
@@ -457,25 +494,38 @@ const StripePlansList = () => {
                       </div>
                       {plan.lookup_key && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Lookup Key:</span>
-                          <span className="font-medium text-xs truncate max-w-[120px]" title={plan.lookup_key}>
+                          <span className="text-muted-foreground">
+                            Lookup Key:
+                          </span>
+                          <span
+                            className="font-medium text-xs truncate max-w-[120px]"
+                            title={plan.lookup_key}
+                          >
                             {plan.lookup_key}
                           </span>
                         </div>
                       )}
                       {features.length > 0 && (
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Features:</span>
-                          <span className="font-medium text-xs">{features.join(", ")}</span>
+                          <span className="text-muted-foreground">
+                            Features:
+                          </span>
+                          <span className="font-medium text-xs">
+                            {features.join(', ')}
+                          </span>
                         </div>
                       )}
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Created:</span>
-                        <span className="font-medium">{formatDate(plan.created)}</span>
+                        <span className="font-medium">
+                          {formatDate(plan.created)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Type:</span>
-                        <span className="font-medium capitalize">{plan.type}</span>
+                        <span className="font-medium capitalize">
+                          {plan.type}
+                        </span>
                       </div>
                     </div>
 
@@ -492,7 +542,7 @@ const StripePlansList = () => {
                   </div>
                 </CardContent>
               </Card>
-            )
+            );
           })
         )}
       </div>
@@ -502,7 +552,9 @@ const StripePlansList = () => {
         <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Plan Details</DialogTitle>
-            <DialogDescription>Detailed information about this Stripe plan</DialogDescription>
+            <DialogDescription>
+              Detailed information about this Stripe plan
+            </DialogDescription>
           </DialogHeader>
           {selectedPlan && (
             <div className="space-y-6">
@@ -514,31 +566,55 @@ const StripePlansList = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm text-muted-foreground">Plan ID</Label>
-                    <p className="font-mono text-sm break-all">{selectedPlan.id}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Plan ID
+                    </Label>
+                    <p className="font-mono text-sm break-all">
+                      {selectedPlan.id}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Product ID</Label>
-                    <p className="font-mono text-sm break-all">{selectedPlan.product}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Product ID
+                    </Label>
+                    <p className="font-mono text-sm break-all">
+                      {selectedPlan.product}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Nickname</Label>
-                    <p className="font-medium">{selectedPlan.nickname || "Not set"}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Nickname
+                    </Label>
+                    <p className="font-medium">
+                      {selectedPlan.nickname || 'Not set'}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Lookup Key</Label>
-                    <p className="font-medium">{selectedPlan.lookup_key || "Not set"}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Lookup Key
+                    </Label>
+                    <p className="font-medium">
+                      {selectedPlan.lookup_key || 'Not set'}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Status</Label>
-                    <Badge variant={selectedPlan.active ? "default" : "secondary"}>
-                      {selectedPlan.active ? "Active" : "Inactive"}
+                    <Label className="text-sm text-muted-foreground">
+                      Status
+                    </Label>
+                    <Badge
+                      variant={selectedPlan.active ? 'default' : 'secondary'}
+                    >
+                      {selectedPlan.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Live Mode</Label>
-                    <Badge variant={selectedPlan.livemode ? "default" : "secondary"}>
-                      {selectedPlan.livemode ? "Live" : "Test"}
+                    <Label className="text-sm text-muted-foreground">
+                      Live Mode
+                    </Label>
+                    <Badge
+                      variant={selectedPlan.livemode ? 'default' : 'secondary'}
+                    >
+                      {selectedPlan.livemode ? 'Live' : 'Test'}
                     </Badge>
                   </div>
                 </div>
@@ -552,22 +628,39 @@ const StripePlansList = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm text-muted-foreground">Amount</Label>
+                    <Label className="text-sm text-muted-foreground">
+                      Amount
+                    </Label>
                     <p className="text-2xl font-bold">
-                      {formatCurrency(selectedPlan.unit_amount, selectedPlan.currency)}
+                      {formatCurrency(
+                        selectedPlan.unit_amount,
+                        selectedPlan.currency,
+                      )}
                     </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Currency</Label>
-                    <p className="font-medium">{selectedPlan.currency.toUpperCase()}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Currency
+                    </Label>
+                    <p className="font-medium">
+                      {selectedPlan.currency.toUpperCase()}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Billing Scheme</Label>
-                    <p className="font-medium capitalize">{selectedPlan.billing_scheme.replace("_", " ")}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Billing Scheme
+                    </Label>
+                    <p className="font-medium capitalize">
+                      {selectedPlan.billing_scheme.replace('_', ' ')}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Type</Label>
-                    <p className="font-medium capitalize">{selectedPlan.type}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Type
+                    </Label>
+                    <p className="font-medium capitalize">
+                      {selectedPlan.type}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -580,23 +673,37 @@ const StripePlansList = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-sm text-muted-foreground">Interval</Label>
-                    <p className="font-medium capitalize">{selectedPlan.recurring.interval}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Interval
+                    </Label>
+                    <p className="font-medium capitalize">
+                      {selectedPlan.recurring.interval}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Interval Count</Label>
-                    <p className="font-medium">{selectedPlan.recurring.interval_count}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Interval Count
+                    </Label>
+                    <p className="font-medium">
+                      {selectedPlan.recurring.interval_count}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Usage Type</Label>
-                    <p className="font-medium capitalize">{selectedPlan.recurring.usage_type}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Usage Type
+                    </Label>
+                    <p className="font-medium capitalize">
+                      {selectedPlan.recurring.usage_type}
+                    </p>
                   </div>
                   <div>
-                    <Label className="text-sm text-muted-foreground">Trial Period</Label>
+                    <Label className="text-sm text-muted-foreground">
+                      Trial Period
+                    </Label>
                     <p className="font-medium">
                       {selectedPlan.recurring.trial_period_days
                         ? `${selectedPlan.recurring.trial_period_days} days`
-                        : "None"}
+                        : 'None'}
                     </p>
                   </div>
                 </div>
@@ -610,14 +717,20 @@ const StripePlansList = () => {
                     Metadata & Features
                   </h3>
                   <div className="space-y-2">
-                    {Object.entries(selectedPlan.metadata).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <Label className="text-sm text-muted-foreground capitalize">{key}:</Label>
-                        <p className="font-medium text-sm">
-                          {key === "features" ? parseFeatures(selectedPlan.metadata).join(", ") : String(value)}
-                        </p>
-                      </div>
-                    ))}
+                    {Object.entries(selectedPlan.metadata).map(
+                      ([key, value]) => (
+                        <div key={key} className="flex justify-between">
+                          <Label className="text-sm text-muted-foreground capitalize">
+                            {key}:
+                          </Label>
+                          <p className="font-medium text-sm">
+                            {key === 'features'
+                              ? parseFeatures(selectedPlan.metadata).join(', ')
+                              : String(value)}
+                          </p>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -630,8 +743,12 @@ const StripePlansList = () => {
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <Label className="text-sm text-muted-foreground">Created</Label>
-                    <p className="font-medium">{formatDate(selectedPlan.created)}</p>
+                    <Label className="text-sm text-muted-foreground">
+                      Created
+                    </Label>
+                    <p className="font-medium">
+                      {formatDate(selectedPlan.created)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -640,7 +757,7 @@ const StripePlansList = () => {
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default StripePlansList
+export default StripePlansList;

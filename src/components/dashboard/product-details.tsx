@@ -1,69 +1,83 @@
-"use client"
+'use client';
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Badge } from "../ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Separator } from "../ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { Package, CheckCircle, XCircle, Database, ExternalLink, Tag, Hash, FileText } from "lucide-react"
-import { Skeleton } from "../ui/skeleton"
-import { useGetProductQuery } from "../../redux/features/admin/adminNotification"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  Package,
+  CheckCircle,
+  XCircle,
+  Database,
+  ExternalLink,
+  Tag,
+  Hash,
+  FileText,
+} from 'lucide-react';
+import { Skeleton } from '../ui/skeleton';
+import { useGetProductQuery } from '../../redux/features/admin/adminNotification';
 
 interface ProductDetailsDialogProps {
-  stripeProductId: string | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  dbProducts: any[]
-  stripeProducts: any[]
+  stripeProductId: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  dbProducts: any[];
+  stripeProducts: any[];
 }
 
 export default function ProductDetailsDialog({
   stripeProductId,
   open,
-  onOpenChange
+  onOpenChange,
 }: ProductDetailsDialogProps) {
   // const dbProduct = dbProducts.find((product) => product.stripeProductId === stripeProductId)
   // const stripeProduct = stripeProducts.find((product) => product.id === stripeProductId)
 
-  const {
-    data,
-    isLoading: isLoadingDetails,
-  } = useGetProductQuery({id:stripeProductId})
+  const { data, isLoading: isLoadingDetails } = useGetProductQuery({
+    id: stripeProductId,
+  });
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })
-  }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
 
   const formatUnixTimestamp = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const parseFeatures = (features: string) => {
     try {
-      if (typeof features === "string") {
-        return features.replace(/"/g, "").split(",").filter(Boolean)
+      if (typeof features === 'string') {
+        return features.replace(/"/g, '').split(',').filter(Boolean);
       }
-      return []
+      return [];
     } catch {
-      return []
+      return [];
     }
-  }
+  };
 
-  const stripeProduct = data?.data
-  const dbProduct = data?.data
+  const stripeProduct = data?.data;
+  const dbProduct = data?.data;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
@@ -72,7 +86,9 @@ export default function ProductDetailsDialog({
             <Package className="h-5 w-5" />
             Product Details: {data?.data?.name || data?.data?.name}
           </DialogTitle>
-          <DialogDescription>Complete information about this product</DialogDescription>
+          <DialogDescription>
+            Complete information about this product
+          </DialogDescription>
         </DialogHeader>
 
         {isLoadingDetails ? (
@@ -101,16 +117,23 @@ export default function ProductDetailsDialog({
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
-                      <CardTitle className="text-xl">{stripeProduct?.name}</CardTitle>
-                      <p className="text-muted-foreground">Product ID: {stripeProductId}</p>
+                      <CardTitle className="text-xl">
+                        {stripeProduct?.name}
+                      </CardTitle>
+                      <p className="text-muted-foreground">
+                        Product ID: {stripeProductId}
+                      </p>
                     </div>
-                    <Badge variant={stripeProduct?.active ? "default" : "secondary"} className="text-sm">
+                    <Badge
+                      variant={stripeProduct?.active ? 'default' : 'secondary'}
+                      className="text-sm"
+                    >
                       {stripeProduct?.active ? (
                         <CheckCircle className="h-4 w-4 mr-1" />
                       ) : (
                         <XCircle className="h-4 w-4 mr-1" />
                       )}
-                      {stripeProduct?.active ? "Active" : "Inactive"}
+                      {stripeProduct?.active ? 'Active' : 'Inactive'}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -123,7 +146,9 @@ export default function ProductDetailsDialog({
                         Description
                       </h3>
                       <p className="text-muted-foreground">
-                        {dbProduct?.description || stripeProduct?.description || "No description available"}
+                        {dbProduct?.description ||
+                          stripeProduct?.description ||
+                          'No description available'}
                       </p>
                     </div>
 
@@ -135,11 +160,13 @@ export default function ProductDetailsDialog({
                           Features
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {parseFeatures(dbProduct.features).map((feature, index) => (
-                            <Badge key={index} variant="outline">
-                              {feature.trim()}
-                            </Badge>
-                          ))}
+                          {parseFeatures(dbProduct.features).map(
+                            (feature, index) => (
+                              <Badge key={index} variant="outline">
+                                {feature.trim()}
+                              </Badge>
+                            ),
+                          )}
                         </div>
                       </div>
                     )}
@@ -151,11 +178,19 @@ export default function ProductDetailsDialog({
                         <div className="text-sm space-y-1">
                           <div className="flex justify-between">
                             <span>Created:</span>
-                            <span>{dbProduct ? formatDate(dbProduct.createdAt) : "N/A"}</span>
+                            <span>
+                              {dbProduct
+                                ? formatDate(dbProduct.createdAt)
+                                : 'N/A'}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Updated:</span>
-                            <span>{dbProduct ? formatDate(dbProduct.updatedAt) : "N/A"}</span>
+                            <span>
+                              {dbProduct
+                                ? formatDate(dbProduct.updatedAt)
+                                : 'N/A'}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -164,13 +199,19 @@ export default function ProductDetailsDialog({
                         <div className="text-sm space-y-1">
                           <div className="flex justify-between">
                             <span>Active:</span>
-                            <Badge variant={stripeProduct?.active ? "default" : "secondary"}>
-                              {stripeProduct?.active ? "Yes" : "No"}
+                            <Badge
+                              variant={
+                                stripeProduct?.active ? 'default' : 'secondary'
+                              }
+                            >
+                              {stripeProduct?.active ? 'Yes' : 'No'}
                             </Badge>
                           </div>
                           <div className="flex justify-between">
                             <span>Type:</span>
-                            <span className="capitalize">{stripeProduct?.type || "N/A"}</span>
+                            <span className="capitalize">
+                              {stripeProduct?.type || 'N/A'}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -194,11 +235,17 @@ export default function ProductDetailsDialog({
                       <div className="space-y-3">
                         <div>
                           <p className="text-muted-foreground">Product ID</p>
-                          <p className="font-mono text-xs break-all">{dbProduct.id}</p>
+                          <p className="font-mono text-xs break-all">
+                            {dbProduct.id}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Stripe Product ID</p>
-                          <p className="font-mono text-xs break-all">{dbProduct.stripeProductId}</p>
+                          <p className="text-muted-foreground">
+                            Stripe Product ID
+                          </p>
+                          <p className="font-mono text-xs break-all">
+                            {dbProduct.stripeProductId}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Name</p>
@@ -213,20 +260,30 @@ export default function ProductDetailsDialog({
                         <div>
                           <p className="text-muted-foreground">Features</p>
                           <div className="flex flex-wrap gap-1 mt-1">
-                            {parseFeatures(dbProduct.features).map((feature, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {feature.trim()}
-                              </Badge>
-                            ))}
+                            {parseFeatures(dbProduct.features).map(
+                              (feature, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {feature.trim()}
+                                </Badge>
+                              ),
+                            )}
                           </div>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Created At</p>
-                          <p className="font-medium">{formatDate(dbProduct.createdAt)}</p>
+                          <p className="font-medium">
+                            {formatDate(dbProduct.createdAt)}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Updated At</p>
-                          <p className="font-medium">{formatDate(dbProduct.updatedAt)}</p>
+                          <p className="font-medium">
+                            {formatDate(dbProduct.updatedAt)}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -235,7 +292,9 @@ export default function ProductDetailsDialog({
               ) : (
                 <Card>
                   <CardContent className="flex items-center justify-center h-32">
-                    <p className="text-muted-foreground">No database information found for this product</p>
+                    <p className="text-muted-foreground">
+                      No database information found for this product
+                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -257,11 +316,15 @@ export default function ProductDetailsDialog({
                         <div className="space-y-3">
                           <div>
                             <p className="text-muted-foreground">Product ID</p>
-                            <p className="font-mono text-xs">{stripeProduct.id}</p>
+                            <p className="font-mono text-xs">
+                              {stripeProduct.id}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Object Type</p>
-                            <p className="font-medium capitalize">{stripeProduct.object}</p>
+                            <p className="font-medium capitalize">
+                              {stripeProduct.object}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Name</p>
@@ -269,29 +332,45 @@ export default function ProductDetailsDialog({
                           </div>
                           <div>
                             <p className="text-muted-foreground">Type</p>
-                            <p className="font-medium capitalize">{stripeProduct.type}</p>
+                            <p className="font-medium capitalize">
+                              {stripeProduct.type}
+                            </p>
                           </div>
                         </div>
                         <div className="space-y-3">
                           <div>
-                            <p className="text-muted-foreground">Active Status</p>
-                            <Badge variant={stripeProduct.active ? "default" : "secondary"}>
-                              {stripeProduct.active ? "Active" : "Inactive"}
+                            <p className="text-muted-foreground">
+                              Active Status
+                            </p>
+                            <Badge
+                              variant={
+                                stripeProduct.active ? 'default' : 'secondary'
+                              }
+                            >
+                              {stripeProduct.active ? 'Active' : 'Inactive'}
                             </Badge>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Live Mode</p>
-                            <Badge variant={stripeProduct.livemode ? "default" : "secondary"}>
-                              {stripeProduct.livemode ? "Live" : "Test"}
+                            <Badge
+                              variant={
+                                stripeProduct.livemode ? 'default' : 'secondary'
+                              }
+                            >
+                              {stripeProduct.livemode ? 'Live' : 'Test'}
                             </Badge>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Created</p>
-                            <p className="font-medium">{formatUnixTimestamp(stripeProduct.created)}</p>
+                            <p className="font-medium">
+                              {formatUnixTimestamp(stripeProduct.created)}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Updated</p>
-                            <p className="font-medium">{formatUnixTimestamp(stripeProduct.updated)}</p>
+                            <p className="font-medium">
+                              {formatUnixTimestamp(stripeProduct.updated)}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -302,41 +381,58 @@ export default function ProductDetailsDialog({
                       <div>
                         <h3 className="font-semibold mb-2">Description</h3>
                         <p className="text-sm text-muted-foreground">
-                          {stripeProduct.description || "No description provided"}
+                          {stripeProduct.description ||
+                            'No description provided'}
                         </p>
                       </div>
 
                       {/* Metadata */}
-                      {stripeProduct.metadata && Object.keys(stripeProduct.metadata).length > 0 && (
-                        <>
-                          <Separator />
-                          <div>
-                            <h3 className="font-semibold mb-3 flex items-center gap-2">
-                              <Hash className="h-4 w-4" />
-                              Stripe Metadata
-                            </h3>
-                            <div className="space-y-2">
-                              {Object.entries(stripeProduct.metadata).map(([key, value]) => (
-                                <div key={key} className="flex justify-between text-sm">
-                                  <span className="text-muted-foreground">{key}:</span>
-                                  <span className="font-medium">{String(value)}</span>
-                                </div>
-                              ))}
+                      {stripeProduct.metadata &&
+                        Object.keys(stripeProduct.metadata).length > 0 && (
+                          <>
+                            <Separator />
+                            <div>
+                              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                                <Hash className="h-4 w-4" />
+                                Stripe Metadata
+                              </h3>
+                              <div className="space-y-2">
+                                {Object.entries(stripeProduct.metadata).map(
+                                  ([key, value]) => (
+                                    <div
+                                      key={key}
+                                      className="flex justify-between text-sm"
+                                    >
+                                      <span className="text-muted-foreground">
+                                        {key}:
+                                      </span>
+                                      <span className="font-medium">
+                                        {String(value)}
+                                      </span>
+                                    </div>
+                                  ),
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
 
                       {/* Additional Details */}
                       <Separator />
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">Statement Descriptor</p>
-                          <p className="font-medium">{stripeProduct.statement_descriptor || "Not set"}</p>
+                          <p className="text-muted-foreground">
+                            Statement Descriptor
+                          </p>
+                          <p className="font-medium">
+                            {stripeProduct.statement_descriptor || 'Not set'}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Tax Code</p>
-                          <p className="font-medium">{stripeProduct.tax_code || "Not set"}</p>
+                          <p className="font-medium">
+                            {stripeProduct.tax_code || 'Not set'}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -345,7 +441,9 @@ export default function ProductDetailsDialog({
               ) : (
                 <Card>
                   <CardContent className="flex items-center justify-center h-32">
-                    <p className="text-muted-foreground">No Stripe data found for this product</p>
+                    <p className="text-muted-foreground">
+                      No Stripe data found for this product
+                    </p>
                   </CardContent>
                 </Card>
               )}
@@ -354,5 +452,5 @@ export default function ProductDetailsDialog({
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

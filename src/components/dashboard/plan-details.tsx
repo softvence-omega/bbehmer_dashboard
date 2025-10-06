@@ -1,17 +1,32 @@
-
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Badge } from "../ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Separator } from "../ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { DollarSign, CreditCard, CheckCircle, XCircle, Database, ExternalLink, Tag, Clock, Hash } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Separator } from '../ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import {
+  DollarSign,
+  CreditCard,
+  CheckCircle,
+  XCircle,
+  Database,
+  ExternalLink,
+  Tag,
+  Clock,
+  Hash,
+} from 'lucide-react';
 
 interface PlanDetailsDialogProps {
-  planId: string | null
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  dbPlans: any[]
-  stripePlans: any[]
+  planId: string | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  dbPlans: any[];
+  stripePlans: any[];
 }
 
 export default function PlanDetailsDialog({
@@ -21,52 +36,54 @@ export default function PlanDetailsDialog({
   dbPlans,
   stripePlans,
 }: PlanDetailsDialogProps) {
-  const dbPlan = dbPlans.find((plan) => plan.id === planId)
-  const stripePlan = stripePlans.find((plan) => plan.id === dbPlan?.stripePriceId)
+  const dbPlan = dbPlans.find((plan) => plan.id === planId);
+  const stripePlan = stripePlans.find(
+    (plan) => plan.id === dbPlan?.stripePriceId,
+  );
 
   const formatCurrency = (amount: number, currency: string) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
       currency: currency.toUpperCase(),
-    }).format(amount / 100)
-  }
+    }).format(amount / 100);
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    })
-  }
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  };
 
   const formatUnixTimestamp = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   const parseMetadata = (metadata: string | object) => {
     try {
-      if (typeof metadata === "string") {
-        if (metadata.startsWith("{")) {
-          return JSON.parse(metadata)
+      if (typeof metadata === 'string') {
+        if (metadata.startsWith('{')) {
+          return JSON.parse(metadata);
         }
-        return { raw: metadata.replace(/"/g, "") }
+        return { raw: metadata.replace(/"/g, '') };
       }
-      return metadata
+      return metadata;
     } catch {
-      return { raw: metadata }
+      return { raw: metadata };
     }
-  }
+  };
 
-  if (!dbPlan) return null
+  if (!dbPlan) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -76,7 +93,9 @@ export default function PlanDetailsDialog({
             <CreditCard className="h-5 w-5" />
             Plan Details: {dbPlan.lookupKey}
           </DialogTitle>
-          <DialogDescription>Complete information about this subscription plan</DialogDescription>
+          <DialogDescription>
+            Complete information about this subscription plan
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="overview" className="w-full">
@@ -92,12 +111,23 @@ export default function PlanDetailsDialog({
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-xl">{dbPlan.lookupKey}</CardTitle>
-                    <p className="text-muted-foreground">Price ID: {dbPlan.stripePriceId}</p>
+                    <CardTitle className="text-xl">
+                      {dbPlan.lookupKey}
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      Price ID: {dbPlan.stripePriceId}
+                    </p>
                   </div>
-                  <Badge variant={dbPlan.active ? "default" : "secondary"} className="text-sm">
-                    {dbPlan.active ? <CheckCircle className="h-4 w-4 mr-1" /> : <XCircle className="h-4 w-4 mr-1" />}
-                    {dbPlan.active ? "Active" : "Inactive"}
+                  <Badge
+                    variant={dbPlan.active ? 'default' : 'secondary'}
+                    className="text-sm"
+                  >
+                    {dbPlan.active ? (
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                    ) : (
+                      <XCircle className="h-4 w-4 mr-1" />
+                    )}
+                    {dbPlan.active ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -111,10 +141,16 @@ export default function PlanDetailsDialog({
                     </h3>
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-3xl font-bold">{formatCurrency(dbPlan.unitAmount, dbPlan.currency)}</span>
-                        <span className="text-muted-foreground">/{dbPlan.interval}</span>
+                        <span className="text-3xl font-bold">
+                          {formatCurrency(dbPlan.unitAmount, dbPlan.currency)}
+                        </span>
+                        <span className="text-muted-foreground">
+                          /{dbPlan.interval}
+                        </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">Currency: {dbPlan.currency.toUpperCase()}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Currency: {dbPlan.currency.toUpperCase()}
+                      </p>
                     </div>
                   </div>
 
@@ -127,15 +163,21 @@ export default function PlanDetailsDialog({
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Database Status:</span>
-                        <Badge variant={dbPlan.active ? "default" : "secondary"}>
-                          {dbPlan.active ? "Active" : "Inactive"}
+                        <Badge
+                          variant={dbPlan.active ? 'default' : 'secondary'}
+                        >
+                          {dbPlan.active ? 'Active' : 'Inactive'}
                         </Badge>
                       </div>
                       {stripePlan && (
                         <div className="flex justify-between">
                           <span>Stripe Status:</span>
-                          <Badge variant={stripePlan.active ? "default" : "secondary"}>
-                            {stripePlan.active ? "Active" : "Inactive"}
+                          <Badge
+                            variant={
+                              stripePlan.active ? 'default' : 'secondary'
+                            }
+                          >
+                            {stripePlan.active ? 'Active' : 'Inactive'}
                           </Badge>
                         </div>
                       )}
@@ -156,12 +198,16 @@ export default function PlanDetailsDialog({
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {Object.entries(parseMetadata(dbPlan.metadata)).map(([key, value]) => (
-                      <div key={key} className="flex justify-between">
-                        <span className="text-muted-foreground capitalize">{key}:</span>
-                        <span className="font-medium">{String(value)}</span>
-                      </div>
-                    ))}
+                    {Object.entries(parseMetadata(dbPlan.metadata)).map(
+                      ([key, value]) => (
+                        <div key={key} className="flex justify-between">
+                          <span className="text-muted-foreground capitalize">
+                            {key}:
+                          </span>
+                          <span className="font-medium">{String(value)}</span>
+                        </div>
+                      ),
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -185,11 +231,15 @@ export default function PlanDetailsDialog({
                     </div>
                     <div>
                       <p className="text-muted-foreground">Product ID</p>
-                      <p className="font-mono text-xs break-all">{dbPlan.productId}</p>
+                      <p className="font-mono text-xs break-all">
+                        {dbPlan.productId}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Stripe Price ID</p>
-                      <p className="font-mono text-xs break-all">{dbPlan.stripePriceId}</p>
+                      <p className="font-mono text-xs break-all">
+                        {dbPlan.stripePriceId}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Lookup Key</p>
@@ -198,21 +248,29 @@ export default function PlanDetailsDialog({
                   </div>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-muted-foreground">Lookup Key in Stripe</p>
-                      <p className="font-medium">{dbPlan.lookupKeyInStripe || "Not set"}</p>
+                      <p className="text-muted-foreground">
+                        Lookup Key in Stripe
+                      </p>
+                      <p className="font-medium">
+                        {dbPlan.lookupKeyInStripe || 'Not set'}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Created At</p>
-                      <p className="font-medium">{formatDate(dbPlan.createdAt)}</p>
+                      <p className="font-medium">
+                        {formatDate(dbPlan.createdAt)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Updated At</p>
-                      <p className="font-medium">{formatDate(dbPlan.updatedAt)}</p>
+                      <p className="font-medium">
+                        {formatDate(dbPlan.updatedAt)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Active Status</p>
-                      <Badge variant={dbPlan.active ? "default" : "secondary"}>
-                        {dbPlan.active ? "Active" : "Inactive"}
+                      <Badge variant={dbPlan.active ? 'default' : 'secondary'}>
+                        {dbPlan.active ? 'Active' : 'Inactive'}
                       </Badge>
                     </div>
                   </div>
@@ -241,35 +299,53 @@ export default function PlanDetailsDialog({
                         </div>
                         <div>
                           <p className="text-muted-foreground">Product ID</p>
-                          <p className="font-mono text-xs">{stripePlan.product}</p>
+                          <p className="font-mono text-xs">
+                            {stripePlan.product}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Nickname</p>
-                          <p className="font-medium">{stripePlan.nickname || "Not set"}</p>
+                          <p className="font-medium">
+                            {stripePlan.nickname || 'Not set'}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Billing Scheme</p>
-                          <p className="font-medium capitalize">{stripePlan.billing_scheme}</p>
+                          <p className="text-muted-foreground">
+                            Billing Scheme
+                          </p>
+                          <p className="font-medium capitalize">
+                            {stripePlan.billing_scheme}
+                          </p>
                         </div>
                       </div>
                       <div className="space-y-3">
                         <div>
                           <p className="text-muted-foreground">Type</p>
-                          <p className="font-medium capitalize">{stripePlan.type}</p>
+                          <p className="font-medium capitalize">
+                            {stripePlan.type}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Tax Behavior</p>
-                          <p className="font-medium capitalize">{stripePlan.tax_behavior}</p>
+                          <p className="font-medium capitalize">
+                            {stripePlan.tax_behavior}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Live Mode</p>
-                          <Badge variant={stripePlan.livemode ? "default" : "secondary"}>
-                            {stripePlan.livemode ? "Live" : "Test"}
+                          <Badge
+                            variant={
+                              stripePlan.livemode ? 'default' : 'secondary'
+                            }
+                          >
+                            {stripePlan.livemode ? 'Live' : 'Test'}
                           </Badge>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Created</p>
-                          <p className="font-medium">{formatUnixTimestamp(stripePlan.created)}</p>
+                          <p className="font-medium">
+                            {formatUnixTimestamp(stripePlan.created)}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -286,19 +362,31 @@ export default function PlanDetailsDialog({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                           <div>
                             <p className="text-muted-foreground">Interval</p>
-                            <p className="font-medium capitalize">{stripePlan.recurring.interval}</p>
+                            <p className="font-medium capitalize">
+                              {stripePlan.recurring.interval}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Interval Count</p>
-                            <p className="font-medium">{stripePlan.recurring.interval_count}</p>
+                            <p className="text-muted-foreground">
+                              Interval Count
+                            </p>
+                            <p className="font-medium">
+                              {stripePlan.recurring.interval_count}
+                            </p>
                           </div>
                           <div>
                             <p className="text-muted-foreground">Usage Type</p>
-                            <p className="font-medium capitalize">{stripePlan.recurring.usage_type}</p>
+                            <p className="font-medium capitalize">
+                              {stripePlan.recurring.usage_type}
+                            </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Trial Period Days</p>
-                            <p className="font-medium">{stripePlan.recurring.trial_period_days || "None"}</p>
+                            <p className="text-muted-foreground">
+                              Trial Period Days
+                            </p>
+                            <p className="font-medium">
+                              {stripePlan.recurring.trial_period_days || 'None'}
+                            </p>
                           </div>
                         </div>
                       </div>
@@ -307,29 +395,41 @@ export default function PlanDetailsDialog({
                     <Separator />
 
                     {/* Metadata */}
-                    {stripePlan.metadata && Object.keys(stripePlan.metadata).length > 0 && (
-                      <div>
-                        <h3 className="font-semibold mb-3 flex items-center gap-2">
-                          <Hash className="h-4 w-4" />
-                          Stripe Metadata
-                        </h3>
-                        <div className="space-y-2">
-                          {Object.entries(stripePlan.metadata).map(([key, value]) => (
-                            <div key={key} className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">{key}:</span>
-                              <span className="font-medium">{String(value)}</span>
-                            </div>
-                          ))}
+                    {stripePlan.metadata &&
+                      Object.keys(stripePlan.metadata).length > 0 && (
+                        <div>
+                          <h3 className="font-semibold mb-3 flex items-center gap-2">
+                            <Hash className="h-4 w-4" />
+                            Stripe Metadata
+                          </h3>
+                          <div className="space-y-2">
+                            {Object.entries(stripePlan.metadata).map(
+                              ([key, value]) => (
+                                <div
+                                  key={key}
+                                  className="flex justify-between text-sm"
+                                >
+                                  <span className="text-muted-foreground">
+                                    {key}:
+                                  </span>
+                                  <span className="font-medium">
+                                    {String(value)}
+                                  </span>
+                                </div>
+                              ),
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                   </div>
                 </CardContent>
               </Card>
             ) : (
               <Card>
                 <CardContent className="flex items-center justify-center h-32">
-                  <p className="text-muted-foreground">No Stripe data found for this plan</p>
+                  <p className="text-muted-foreground">
+                    No Stripe data found for this plan
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -337,5 +437,5 @@ export default function PlanDetailsDialog({
         </Tabs>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

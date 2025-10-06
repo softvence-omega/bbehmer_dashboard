@@ -1,13 +1,13 @@
-import { Toaster } from "sonner"
-import AdminDashboard from "../components/dashboard/admin-dashboard"
+import { Toaster } from 'sonner';
+import AdminDashboard from '../components/dashboard/admin-dashboard';
 
 const DashboardLayout = () => {
   return (
     <>
-        <AdminDashboard/>
-        <Toaster richColors position="top-center" />
+      <AdminDashboard />
+      <Toaster richColors position="top-center" />
     </>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;

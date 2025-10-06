@@ -1,25 +1,36 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Eye, Ban, RotateCcw, CreditCard, MoreHorizontal } from "lucide-react"
-import { Card } from "../ui/card"
-import { Badge } from "../ui/badge"
-import { Button } from "../ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { Eye, Ban, RotateCcw, CreditCard, MoreHorizontal } from 'lucide-react';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
-
-const UserInfoCard = ({ user, onAction }:any) => {
+const UserInfoCard = ({ user, onAction }: any) => {
   const getStatusBadge = (status: string) => {
     const variants = {
-      active: "default",
-      suspended: "secondary",
-      banned: "destructive",
-    } as const
+      active: 'default',
+      suspended: 'secondary',
+      banned: 'destructive',
+    } as const;
 
-    return <Badge variant={variants[status as keyof typeof variants]}>{status}</Badge>
-  }
+    return (
+      <Badge variant={variants[status as keyof typeof variants]}>
+        {status}
+      </Badge>
+    );
+  };
 
   const getSubscriptionBadge = (subscription: string) => {
-    return <Badge variant={subscription === "paid" ? "default" : "outline"}>{subscription}</Badge>
-  }
+    return (
+      <Badge variant={subscription === 'paid' ? 'default' : 'outline'}>
+        {subscription}
+      </Badge>
+    );
+  };
 
   return (
     <Card className="space-y-3 p-4">
@@ -39,15 +50,15 @@ const UserInfoCard = ({ user, onAction }:any) => {
               <Eye className="h-4 w-4 mr-2" />
               View Details
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAction(user, "suspend")}>
+            <DropdownMenuItem onClick={() => onAction(user, 'suspend')}>
               <Ban className="h-4 w-4 mr-2" />
-              {user.status === "suspended" ? "Unsuspend" : "Suspend"}
+              {user.status === 'suspended' ? 'Unsuspend' : 'Suspend'}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAction(user, "reset")}>
+            <DropdownMenuItem onClick={() => onAction(user, 'reset')}>
               <RotateCcw className="h-4 w-4 mr-2" />
               Reset Password222
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAction(user, "subscription")}>
+            <DropdownMenuItem onClick={() => onAction(user, 'subscription')}>
               <CreditCard className="h-4 w-4 mr-2" />
               Manage Subscription
             </DropdownMenuItem>
@@ -64,7 +75,7 @@ const UserInfoCard = ({ user, onAction }:any) => {
         <div>Favorites: {user.favorites}</div>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default UserInfoCard
+export default UserInfoCard;

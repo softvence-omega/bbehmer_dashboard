@@ -8,14 +8,13 @@ import {
   PURGE,
   REGISTER,
   REHYDRATE,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { baseApi } from './api/baseApi';
 import authReducer from './features/auth/authSlice';
 
-
 const persistConfig = {
-  key: "dressify-auth",
+  key: 'dressify-auth',
   storage,
 };
 
@@ -23,17 +22,17 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    [baseApi.reducerPath] : baseApi.reducer,
-    auth: persistedAuthReducer
+    [baseApi.reducerPath]: baseApi.reducer,
+    auth: persistedAuthReducer,
   },
-  middleware : getDefaultMiddlewares => getDefaultMiddlewares({
-    serializableCheck:{
-      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-  }
+  middleware: (getDefaultMiddlewares) =>
+    getDefaultMiddlewares({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(baseApi.middleware),
+});
 
-  }).concat(baseApi.middleware)
-})
-
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export const persistor = persistStore(store);
