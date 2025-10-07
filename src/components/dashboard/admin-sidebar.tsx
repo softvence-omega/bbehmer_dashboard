@@ -71,6 +71,12 @@ const AdminSidebar = () => {
       path: 'coffee-shop-management',
     },
     {
+      title: 'Leaderboard',
+      icon: Users,
+      view: 'leaderboard' as const,
+      path: 'leaderboard',
+    },
+    {
       title: 'Plan Limits',
       icon: LucideMilestone,
       view: 'plan-limits' as const,

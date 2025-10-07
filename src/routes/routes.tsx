@@ -19,6 +19,7 @@ import PlanList from '../components/dashboard/admin-plan-limits';
 import AdminCreadintialsChange from '../components/dashboard/admin-settings';
 import ForgotPasswordFlow from '../pages/auth/forget-password';
 import AdminManagement from '../components/dashboard/admin-management';
+import AdminLeaderboard from '../components/dashboard/admin-leaderboard';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -66,18 +67,10 @@ const router = createBrowserRouter([
         path: 'notes',
         element: <UserAdminNotesList />,
       },
-      // {
-      //   path: 'plan',
-      //   element: <StripePlansList />,
-      // },
-      // {
-      //   path: 'products',
-      //   element: <StripeProductsList />,
-      // },
-      // {
-      //   path: 'customer',
-      //   element: <StripeCustomersList />,
-      // },
+      {
+        path: 'leaderboard',
+        element: <AdminLeaderboard />,
+      },
       {
         path: 'ban-ip',
         element: <BanManagementList />,

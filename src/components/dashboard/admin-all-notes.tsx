@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
