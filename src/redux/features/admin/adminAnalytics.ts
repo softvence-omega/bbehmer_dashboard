@@ -104,6 +104,29 @@ const adminAnalytics = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['PlanLimits'],
     }),
+
+    // Leaderboard
+    adminLeaderboard: builder.query({
+      query: (args?: {
+        type?: 'week' | 'month' | 'range';
+        startDate?: string;
+        endDate?: string;
+        skip?: number;
+        take?: number;
+      }) => {
+        return {
+          url: '/admin/leaderboard',
+          method: 'GET',
+          params: {
+            type: args?.type,
+            startDate: args?.startDate,
+            endDate: args?.endDate,
+            skip: args?.skip,
+            take: args?.take,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -115,4 +138,5 @@ export const {
   useAdminUserGrowthQuery,
   useAdminUserActivityQuery,
   useAdminUserRetentionQuery,
+  useAdminLeaderboardQuery,
 } = adminAnalytics;
