@@ -93,6 +93,7 @@ type Admin = {
 
 // Form schema for creating/editing admins
 const adminFormSchema = z.object({
+  id: z.string(),
   name: z
     .string()
     .min(2, 'Name must be at least 2 characters')
@@ -245,7 +246,7 @@ const AdminManagement = () => {
     setIsLoading(true);
     try {
       // Simulate API call
-      await updateAdmin(data);
+      await updateAdmin({ id: data.id, data });
 
       // In real implementation, you would call your update admin mutation here
       // await updateAdminMutation({ id: selectedAdmin.id, ...data })
@@ -288,10 +289,12 @@ const AdminManagement = () => {
   // Open edit modal with admin data
   const openEditModal = (admin: Admin) => {
     setSelectedAdmin(admin);
+    console.log(admin);
     editForm.reset({
+      id: admin.id,
       name: admin.name,
       email: admin.email,
-      password: '', // Placeholder for password
+      password: '',
     });
     setIsEditModalOpen(true);
   };
